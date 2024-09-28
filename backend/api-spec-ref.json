@@ -1,0 +1,6066 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Troov API",
+    "description": "Troov API server.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost/v1",
+      "description": "Local https server"
+    },
+    {
+      "url": "https://dev-api.troov.app/v1",
+      "description": "Dev https server"
+    },
+    {
+      "url": "https://staging-api.troov.app/v1",
+      "description": "Staging https server"
+    },
+    {
+      "url": "https://prod-api.troov.app/v1",
+      "description": "Production https server"
+    }
+  ],
+  "security": [
+    {
+      "BearerAuth": [
+        "troov-user"
+      ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "admin",
+      "description": "Use existing endpoints with admin permissions and manage users data"
+    },
+    {
+      "name": "chatSession",
+      "description": "Operations for managing conversations between users"
+    },
+    {
+      "name": "discover",
+      "description": "Search and find new troovs"
+    },
+    {
+      "name": "healthcheck",
+      "description": "Healthcheck endpoint"
+    },
+    {
+      "name": "image",
+      "description": "Operations for managing images"
+    },
+    {
+      "name": "notify",
+      "description": "Long polling operations"
+    },
+    {
+      "name": "troov",
+      "description": "Operations for managing troovs"
+    },
+    {
+      "name": "user",
+      "description": "Operations for managing all user-related information"
+    },
+    {
+      "name": "verify",
+      "description": "Operations for verifying user information"
+    }
+  ],
+  "paths": {
+    "/healthcheck": {
+      "get": {
+        "tags": [
+          "healthcheck"
+        ],
+        "summary": "Healthcheck",
+        "description": "Healthcheck endpoint",
+        "x-eov-operation-handler": "controllers/HealthChecker",
+        "operationId": "healthCheck",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/healthStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/cacheHealthMetrics": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Get cache health metrics",
+        "description": "Returns cache health metrics",
+        "operationId": "getCacheHealthMetrics",
+        "x-eov-operation-id": "getCacheHealthMetrics",
+        "x-eov-operation-handler": "controllers/Admin",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/cacheHealthMetrics"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          }
+        }
+      }
+    },
+    "/admin/deleteSupportRequestsForUser/{userId}": {
+      "delete": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Delete all support requests for a user",
+        "description": "Deletes all support requests for a user",
+        "operationId": "deleteSupportRequestsForUser",
+        "x-eov-operation-handler": "controllers/Admin",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "No User Profiles found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/admin/getAllUsers": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Get all users",
+        "description": "Returns all user profiles",
+        "operationId": "getUserProfiles",
+        "x-eov-operation-id": "getUserProfiles",
+        "x-eov-operation-handler": "controllers/Admin",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/userProfile"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "No User Profiles found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/admin/getSupportRequestsForUser/{userId}": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Get all support requests for a user",
+        "description": "Returns all support requests for a user",
+        "operationId": "getSupportRequestsForUser",
+        "x-eov-operation-handler": "controllers/Admin",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/supportChatResponse"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "No User Profiles found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/admin/getUser/{userId}": {
+      "get": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Find a user profile by ID",
+        "description": "Returns a single profile object",
+        "operationId": "getUserById",
+        "x-eov-operation-id": "getUserById",
+        "x-eov-operation-handler": "controllers/Admin",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user profile",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/admin/nonModeratedUpload/troov/create": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Create a new troov date for this user without content moderation",
+        "operationId": "createNonModeratedTroov",
+        "x-eov-operation-handler": "controllers/Admin",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin"
+            ]
+          }
+        ],
+        "requestBody": {
+          "description": "New troov to be created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/troov"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Troov Date created",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/admin/nonModeratedUpload/profilePhoto/{userId}": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Save profile photo without image moderation",
+        "x-eov-operation-handler": "controllers/Admin",
+        "operationId": "uploadNonModeratedProfilePhoto",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Profile photo",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "profilePhoto": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "profilePhotoRank": {
+                    "type": "string",
+                    "enum": [
+                      "0",
+                      "1",
+                      "2",
+                      "3",
+                      "4",
+                      "5"
+                    ],
+                    "default": "0"
+                  }
+                }
+              },
+              "encoding": {
+                "profilePhoto": {
+                  "contentType": "image/png, image/jpeg"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Profile photo created",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/admin/sendChatToAllActiveUsers": {
+      "post": {
+        "tags": [
+          "admin"
+        ],
+        "summary": "Send a chat message to all active users",
+        "operationId": "sendChatToAllActiveUsers",
+        "x-eov-operation-id": "sendChatToAllActiveUsers",
+        "x-eov-operation-handler": "controllers/Admin",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin"
+            ]
+          }
+        ],
+        "requestBody": {
+          "description": "Chat message to be sent",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Chat message sent",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/chatSession/{chatSessionId}": {
+      "get": {
+        "tags": [
+          "chatSession"
+        ],
+        "summary": "Find a chatSession by ID",
+        "description": "Returns a single chatSession",
+        "x-eov-operation-handler": "controllers/ChatSession",
+        "operationId": "getChatSessionById",
+        "parameters": [
+          {
+            "name": "chatSessionId",
+            "in": "path",
+            "description": "ID of chatSession",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/chatSession"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ChatSession ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "ChatSession not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/chatSession/{chatSessionId}/addChat": {
+      "post": {
+        "tags": [
+          "chatSession"
+        ],
+        "summary": "add a chat to a chat session",
+        "description": "Returns all chats for a given user",
+        "x-eov-operation-handler": "controllers/ChatSession",
+        "operationId": "addChatToChatSession",
+        "parameters": [
+          {
+            "name": "chatSessionId",
+            "in": "path",
+            "description": "ID of the chat session",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "New chat message to be added",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/chat"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/chat"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Chat not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/chatSession/active/{userId}": {
+      "get": {
+        "tags": [
+          "chatSession"
+        ],
+        "summary": "Get all active chat sessions for user",
+        "description": "Returns an array of a users chatSession",
+        "x-eov-operation-handler": "controllers/ChatSession",
+        "operationId": "getActiveChatSessionsWithUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "userId for which to get active chats",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/chatSession"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ChatSession ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "ChatSession not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/chatSession/all/{userId}": {
+      "get": {
+        "tags": [
+          "chatSession"
+        ],
+        "summary": "Get all chat sessions for user",
+        "description": "Returns an array of a users chatSession",
+        "x-eov-operation-handler": "controllers/ChatSession",
+        "operationId": "getAllChatSessionsWithUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "userId for which to get active chats",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/chatSession"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ChatSession ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "ChatSession not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/chatSession/create": {
+      "post": {
+        "tags": [
+          "chatSession"
+        ],
+        "summary": "Create a new chatSession",
+        "operationId": "createChatSession",
+        "x-eov-operation-handler": "controllers/ChatSession",
+        "requestBody": {
+          "description": "New chatSession to be created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/chatSession"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "ChatSession created",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/chatSession/delete/{chatSessionId}": {
+      "delete": {
+        "tags": [
+          "chatSession"
+        ],
+        "summary": "Delete a chatSession",
+        "description": "Deletes a chatSession",
+        "operationId": "deleteChatSession",
+        "x-eov-operation-handler": "controllers/ChatSession",
+        "parameters": [
+          {
+            "name": "chatSessionId",
+            "in": "path",
+            "description": "ID of chatSession",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "chatSession deleted",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid ID supplied",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "chatSession not found"
+          }
+        }
+      }
+    },
+    "/chatSession/deleteAllChatSessionsForUser/{userId}": {
+      "delete": {
+        "tags": [
+          "chatSession"
+        ],
+        "summary": "Deletes all chat sessions associate with the user id",
+        "description": "Deletes all chat sessions associate with the user id",
+        "operationId": "deleteAllChatSessionsForUser",
+        "x-eov-operation-handler": "controllers/ChatSession",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "chatSession deleted",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid ID supplied",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "chatSession not found"
+          }
+        }
+      }
+    },
+    "/chatSession/{chatSessionId}/viewedBy/{userId}": {
+      "put": {
+        "tags": [
+          "chatSession"
+        ],
+        "summary": "update the latest chat view time for this user",
+        "description": "update the latest chat view time for this user",
+        "x-eov-operation-handler": "controllers/ChatSession",
+        "operationId": "updateLatestViewedTime",
+        "parameters": [
+          {
+            "name": "chatSessionId",
+            "in": "path",
+            "description": "ID of chatSession",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "userId for which to get active chats",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "chatSession latest chat view time updated",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid ChatSession ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "ChatSession not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/image/cleanUpload/profilePhotos/{userId}": {
+      "post": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Remove existing profile photos and upload new ones",
+        "x-eov-operation-handler": "controllers/Image",
+        "operationId": "cleanUploadProfilePhotos",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Profile photos",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "profilePhotos": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  },
+                  "profilePhotosRanks": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5"
+                      ],
+                      "default": "0"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "profilePhotos": {
+                  "contentType": "image/png, image/jpeg"
+                },
+                "profilePhotosRanks": {
+                  "contentType": "application/json",
+                  "explode": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Profile photo created",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/image/downloadUrl/{userId}/{imageKey}": {
+      "get": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Get image download url",
+        "x-eov-operation-handler": "controllers/Image",
+        "operationId": "getProfilePhotoDownloadUrl",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin",
+              "troov-user",
+              "webserver"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          },
+          {
+            "name": "imageKey",
+            "in": "path",
+            "description": "The Image Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image download url",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Image not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/image/downloadUrl/profilePhotos/{userId}": {
+      "get": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Get profile photos download urls",
+        "x-eov-operation-handler": "controllers/Image",
+        "operationId": "getProfilePhotosDownloadUrls",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile photos download url",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Profile photos not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/image/downloadUrl/lowRes/{userId}/{imageKey}": {
+      "get": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Get low resolution image download url",
+        "x-eov-operation-handler": "controllers/Image",
+        "operationId": "getLowResProfilePhotoDownloadUrl",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin",
+              "troov-user",
+              "webserver"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          },
+          {
+            "name": "imageKey",
+            "in": "path",
+            "description": "The Image Key",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image download url",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Image not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/image/downloadUrl/lowRes/profilePhotos/{userId}": {
+      "get": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Get low resolution profile photos download urls",
+        "x-eov-operation-handler": "controllers/Image",
+        "operationId": "getLowResProfilePhotosDownloadUrls",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile photos download url",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Profile photos not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/image/downloadUrl/lowRes/profileThumbnail/{userId}": {
+      "get": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Get low resolution profile thumbnail download url",
+        "x-eov-operation-handler": "controllers/Image",
+        "operationId": "getLowResProfileThumbnailDownloadUrl",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile thumbnail download url",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Profile thumbnail not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/image/upload/profilePhoto/{userId}": {
+      "post": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Save profile photo",
+        "x-eov-operation-handler": "controllers/Image",
+        "operationId": "uploadProfilePhoto",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Profile photo",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "profilePhoto": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "profilePhotoRank": {
+                    "type": "string",
+                    "enum": [
+                      "0",
+                      "1",
+                      "2",
+                      "3",
+                      "4",
+                      "5"
+                    ],
+                    "default": "0"
+                  }
+                }
+              },
+              "encoding": {
+                "profilePhoto": {
+                  "contentType": "image/png, image/jpeg"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Profile photo created",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/image/upload/profilePhotos/{userId}": {
+      "post": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Save profile photos",
+        "x-eov-operation-handler": "controllers/Image",
+        "operationId": "uploadProfilePhotos",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Profile photos",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "profilePhotos": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  },
+                  "profilePhotosRanks": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "0",
+                        "1",
+                        "2",
+                        "3",
+                        "4",
+                        "5"
+                      ],
+                      "default": "0"
+                    }
+                  }
+                }
+              },
+              "encoding": {
+                "profilePhotos": {
+                  "contentType": "image/png, image/jpeg"
+                },
+                "profilePhotosRanks": {
+                  "contentType": "application/json",
+                  "explode": true
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Profile photo created",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/image/delete/{userId}/{imageKey}/{rank}": {
+      "delete": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Delete profile photo by url",
+        "description": "Delete profile photo",
+        "x-eov-operation-handler": "controllers/Image",
+        "operationId": "deleteProfilePhoto",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          },
+          {
+            "name": "imageKey",
+            "in": "path",
+            "description": "Key of profile photo to be deleted",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "rank",
+            "in": "path",
+            "description": "the rank of the profile photo to be deleted",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile photo deleted",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid URL supplied",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Image not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/image/delete/profilePhotos/{userId}": {
+      "delete": {
+        "tags": [
+          "image"
+        ],
+        "summary": "Delete all of this users profile photos",
+        "description": "Delete profile photos",
+        "x-eov-operation-handler": "controllers/Image",
+        "operationId": "deleteAllProfilePhotos",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The User Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile photos deleted",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid URL supplied",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Image not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/discover/activitySuggestions/{userId}": {
+      "get": {
+        "tags": [
+          "discover"
+        ],
+        "summary": "Get activity suggestions",
+        "description": "Returns an array of activity suggestions",
+        "x-eov-operation-handler": "controllers/Discover",
+        "operationId": "getActivitySuggestions",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Get activity suggestions for this userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Location of the user",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/coordinates"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ActivitySuggestion"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/discover/troovs/{userId}": {
+      "post": {
+        "tags": [
+          "discover"
+        ],
+        "summary": "Find recommended troovs for a given user",
+        "description": "Returns an array of troovs",
+        "operationId": "discoverTroovsByUserId",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin",
+              "troov-user",
+              "webserver"
+            ]
+          }
+        ],
+        "requestBody": {
+          "description": "Filter to be applied on the discover query",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/discoverFilterSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Get recommended troovs for this userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/discoverTroovsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          }
+        },
+        "x-eov-operation-handler": "controllers/Discover"
+      }
+    },
+    "/discover/troovs/byTag/{tagName}": {
+      "get": {
+        "tags": [
+          "discover"
+        ],
+        "summary": "Find all troovs relevant to a given tag",
+        "description": "Returns an array of troovs",
+        "operationId": "discoverTroovsByTagName",
+        "parameters": [
+          {
+            "name": "tagName",
+            "in": "path",
+            "description": "Get recommended troovs for this tagName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troov"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          }
+        },
+        "x-eov-operation-handler": "controllers/Discover"
+      }
+    },
+    "/discover/troovs/search/{searchTerms}": {
+      "get": {
+        "tags": [
+          "discover"
+        ],
+        "summary": "Get all troovs matching the search terms",
+        "description": "Returns all troovs matching the search terms",
+        "x-eov-operation-id": "discoverTroovsMatchingSearchTerms",
+        "x-eov-operation-handler": "controllers/Discover",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin",
+              "troov-user",
+              "webserver"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "searchTerms",
+            "in": "path",
+            "description": "Get recommended troovs for these search terms",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max numbers of troovs to return per request",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "includeTestTroovs",
+            "in": "query",
+            "description": "Include test troovs in the search results",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "queryLatitude",
+            "in": "query",
+            "description": "The latitude of the user",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "minimum": -90,
+              "maximum": 90
+            }
+          },
+          {
+            "name": "queryLongitude",
+            "in": "query",
+            "description": "The longitude of the user",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "minimum": -180,
+              "maximum": 180
+            }
+          },
+          {
+            "name": "queryRadius",
+            "in": "query",
+            "description": "The radius of the search in km",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "format": "double",
+              "minimum": 0,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "The field to sort by",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/paginationOrder"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The max numbers of troovs to return per request",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troov"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "No Troovs found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/discover/tags/mostPopular/{n}": {
+      "get": {
+        "tags": [
+          "discover"
+        ],
+        "summary": "Get the most popular n tags",
+        "description": "Returns the most popular n tags",
+        "x-eov-operation-id": "discoverMostPopularTags",
+        "x-eov-operation-handler": "controllers/Discover",
+        "parameters": [
+          {
+            "name": "n",
+            "in": "path",
+            "description": "return this number of tags",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "format": "int64",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troov"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "No Troovs found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/discover/tags/active": {
+      "get": {
+        "tags": [
+          "discover"
+        ],
+        "summary": "Get all active tags",
+        "description": "Returns all tags which have active troovs",
+        "x-eov-operation-id": "discoverActiveTags",
+        "x-eov-operation-handler": "controllers/Discover",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troov"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "No Troovs found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/notify/notifications/{userId}/longPolling": {
+      "get": {
+        "tags": [
+          "notify"
+        ],
+        "summary": "Long poll for notifications",
+        "description": "Returns any notifications related to the user",
+        "x-eov-operation-handler": "controllers/Notify",
+        "operationId": "longPollNotifications",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user notifications of interest",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/notification"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "userId not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/notify/notifications/{userId}/since/{createdTime}": {
+      "get": {
+        "tags": [
+          "notify"
+        ],
+        "summary": "Get notifications since a given time",
+        "description": "Returns any notifications related to the user since the given time",
+        "x-eov-operation-handler": "controllers/Notify",
+        "operationId": "getNotificationsForUserSince",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user notifications of interest",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          },
+          {
+            "name": "createdTime",
+            "in": "path",
+            "description": "Time to get notifications since",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/notification"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID or createdTime provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "userId not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/notify/notifications/chatSessions/{userId}/longPolling": {
+      "get": {
+        "tags": [
+          "notify"
+        ],
+        "summary": "Long poll for chat session updates",
+        "description": "Returns any chat session updates related to the user",
+        "x-eov-operation-handler": "controllers/Notify",
+        "operationId": "longPollChatSessions",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user chat sessions of interest",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/chatSession"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "userId not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/notify/notifications/troovMatchRequests/{userId}/longPolling": {
+      "get": {
+        "tags": [
+          "notify"
+        ],
+        "summary": "Long poll for troov match requests",
+        "description": "Returns any troov match requests related to the user",
+        "x-eov-operation-handler": "controllers/Notify",
+        "operationId": "longPollTroovMatchRequests",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user chat sessions of interest",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/troov"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid troov ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "troov not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/{troovId}": {
+      "get": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Find a troov by ID",
+        "description": "Returns a single troov date",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "getTroovById",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin",
+              "troov-user",
+              "webserver"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "ID of troov",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/troov"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid troov ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "troov not found",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Update an existing troov",
+        "operationId": "updateTroov",
+        "x-eov-operation-handler": "controllers/Troov",
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "ID of troov",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Troov with updated details. Will only update fields provided",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/troov"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Troov updated",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/{troovId}/withImageDownloadUrls": {
+      "get": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Find a troov by ID with image download URLs",
+        "description": "Returns a single troov date with image download URLs",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "getTroovByIdWithImageDownloadUrls",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin",
+              "troov-user",
+              "webserver"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "ID of troov",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/troov"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid troov ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "troov not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/create": {
+      "post": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Create a new troov date for this user",
+        "operationId": "createTroovForUser",
+        "x-eov-operation-handler": "controllers/Troov",
+        "requestBody": {
+          "description": "New troov to be created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/troov"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Troov Date created",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/createdBy/{userId}": {
+      "get": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Get all troovs created by this user",
+        "description": "Returns all user's troovs",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "getTroovsCreatedByUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id of user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troov"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid troov ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "troov not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/createdBy/{userId}/status/open": {
+      "get": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Get all troovs created by this user with status open",
+        "description": "Returns all user's open picks",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "getPendingTroovPicksForUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id of user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troov"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid troov ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "troov not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/delete/{troovId}": {
+      "delete": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Delete a troov",
+        "description": "Deletes a troov",
+        "operationId": "deleteTroov",
+        "x-eov-operation-id": "deleteTroov",
+        "x-eov-operation-handler": "controllers/Troov",
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "ID of troov",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Troov deleted",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid ID supplied",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/getTroovActivityTaxonomy": {
+      "get": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Get all troov activity taxonomy",
+        "description": "Returns all troov activity taxonomy",
+        "operationId": "getTroovActivityTaxonomy",
+        "x-eov-operation-id": "getTroovActivityTaxonomy",
+        "x-eov-operation-handler": "controllers/Troov",
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troovActivity"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "No Troov Activity Taxonomy found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/getTroovsWithPendingJoinRequestsForUser/{userId}": {
+      "get": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Get all troovs with a pending join request for this user",
+        "description": "Returns all user's pending join requests",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "getTroovsWithPendingJoinRequestsForUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id of user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation. Note the response only returns match requests details which were created by this user.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troov"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid troov ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "troov not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/{troovId}/pendingMatchRequests": {
+      "get": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Get all match requests which are pending for this troov",
+        "description": "Returns all troov's pending match requests",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "getPendingMatchRequestsForTroov",
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "Id of troov",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troovMatchRequest"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid troov ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "troov not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/status/completed/{userId}": {
+      "get": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Get all troovs with status completed for user",
+        "description": "Returns a list of all user's completed troovs",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "getAllCompletedTroovs",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user profile",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troov"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/status/confirmed/{userId}": {
+      "get": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Get all troovs with status confirmed for user",
+        "description": "Returns a list of all user's confirmed troovs",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "getAllConfirmedTroovs",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user profile",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troov"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/status/confirmedAndPendingReview/{userId}": {
+      "get": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Get all troovs with status confirmed and pending review for user",
+        "description": "Returns a list of all user's confirmed and pending review troovs",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "getAllConfirmedAndPendingReviewTroovs",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user profile",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troov"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/status/open/{userId}": {
+      "get": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Get all troovs created by the user with status OPEN",
+        "description": "Returns a list of all user's created troovs with status OPEN",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "getAllPendingTroovs",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin",
+              "troov-user",
+              "webserver"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user profile",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/troov"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/{troovId}/requestToJoinTroov/{userId}": {
+      "put": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Update troov with interested user",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "requestToJoinTroov",
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "Id of troov",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id of user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Opening chat message if applicable",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/chat"
+              }
+            }
+          },
+          "required": false
+        },
+        "responses": {
+          "200": {
+            "description": "Troov updated",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Troov not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/{troovId}/cancelTroovForUser/{userId}": {
+      "put": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Cancel user's troov",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "cancelTroovForUser",
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "Id of troov",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id of user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Troov updated",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Troov not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/{troovId}/cancelJoinRequestForUser/{userId}": {
+      "put": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Cancel user join request for this troov",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "cancelTroovJoinRequestForUser",
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "Id of troov",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id of user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Troov updated",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Troov not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/{troovId}/declineJoinRequestFromUser/{userId}": {
+      "put": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Decline join request from user",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "declineJoinRequestFromUser",
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "Id of troov",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id of user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Troov updated",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Troov not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/{troovId}/confirm/{userId}": {
+      "put": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Cancel troov user",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "acceptJoinRequestFromUser",
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "Id of troov",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id of user to be confirmed",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Troov updated",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Troov not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/{troovId}/reviewFromParticipant/{userId}": {
+      "put": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Review a troov participant",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "reviewFromParticipant",
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "Id of troov",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id of user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "New troov to be created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/troovReview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Troov updated",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Troov not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/troov/{troovId}/viewedBy/{userId}": {
+      "put": {
+        "tags": [
+          "troov"
+        ],
+        "summary": "Mark troov as viewed by user",
+        "x-eov-operation-handler": "controllers/Troov",
+        "operationId": "markTroovAsViewedByUser",
+        "parameters": [
+          {
+            "name": "troovId",
+            "in": "path",
+            "description": "Id of troov",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id of user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^(?!\\s*$).+"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Troov updated",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "Troov not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/user": {
+      "post": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Create a new user",
+        "operationId": "createUser",
+        "x-eov-operation-id": "createUser",
+        "x-eov-operation-handler": "controllers/User",
+        "requestBody": {
+          "description": "New user to be created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/user"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "User profile created",
+            "content": {}
+          },
+          "401": {
+            "description": "API key is missing or invalid",
+            "headers": {
+              "WWW_Authenticate": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Invalid input",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/user/{userId}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Find a user by ID",
+        "description": "Returns a single user object",
+        "operationId": "getUserById",
+        "x-eov-operation-id": "getUserById",
+        "x-eov-operation-handler": "controllers/User",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user profile",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update an existing user",
+        "operationId": "updateUser",
+        "x-eov-operation-id": "updateUser",
+        "x-eov-operation-handler": "controllers/User",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user profile",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User object to be updated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/user"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User updated",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/user/activate/{userId}": {
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Activate user",
+        "description": "Activates user",
+        "operationId": "activateUser",
+        "x-eov-operation-id": "activateUser",
+        "x-eov-operation-handler": "controllers/User",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to be activated",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/user/deactivate/{userId}": {
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Deactivate user",
+        "description": "Deactivate user",
+        "operationId": "deactivateUser",
+        "x-eov-operation-id": "deactivateUser",
+        "x-eov-operation-handler": "controllers/User",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to be deactivated",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/user/delete/{userId}": {
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Delete a user",
+        "description": "Deletes a user",
+        "operationId": "deleteUser",
+        "x-eov-operation-id": "deleteUser",
+        "x-eov-operation-handler": "controllers/User",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted",
+            "content": {}
+          },
+          "400": {
+            "description": "Invalid ID supplied",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/user/profile/{userId}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Find a user profile by ID",
+        "description": "Returns a single profile object",
+        "operationId": "getUserProfileById",
+        "x-eov-operation-id": "getUserProfileById",
+        "x-eov-operation-handler": "controllers/User",
+        "security": [
+          {
+            "BearerAuth": [
+              "admin",
+              "troov-user",
+              "webserver"
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user profile",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userProfile"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Update an existing user profile",
+        "operationId": "updateUserProfile",
+        "x-eov-operation-id": "updateUserProfile",
+        "x-eov-operation-handler": "controllers/User",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user profile",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User profile object to be updated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userProfile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User profile updated",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/user/profileState/{userId}": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Retrieve activation state of user",
+        "description": "Retrieves activation state of user",
+        "operationId": "getProfileState",
+        "x-eov-operation-id": "getProfileState",
+        "x-eov-operation-handler": "controllers/User",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid user ID provided",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/verify/sendSmsCodeForUser/{userId}": {
+      "post": {
+        "tags": [
+          "verify"
+        ],
+        "summary": "Verify user profile",
+        "operationId": "verifyUserProfile",
+        "x-eov-operation-id": "sendSmsCodeForUser",
+        "x-eov-operation-handler": "controllers/Verification",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to be verified",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile verified",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/verify/verifySmsCodeForUser/{userId}": {
+      "post": {
+        "tags": [
+          "verify"
+        ],
+        "summary": "Verify user profile",
+        "operationId": "verifySmsCodeForUser",
+        "x-eov-operation-id": "verifyUserPhoneNumber",
+        "x-eov-operation-handler": "controllers/Verification",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to be verified",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "New user to be created",
+          "content": {
+            "application/json": {
+              "schema": {
+                "description": "All data related to a User in the application",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "userSubmittedCode": {
+                    "description": "the code that the user received over SMS",
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User profile verified",
+            "content": {}
+          },
+          "401": {
+            "$ref": "#/paths/~1user/post/responses/401"
+          },
+          "404": {
+            "description": "User profile not found",
+            "content": {}
+          },
+          "405": {
+            "description": "Validation exception",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActivitySuggestion": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the activity suggestion"
+          },
+          "title": {
+            "type": "string",
+            "description": "The title of the activity suggestion"
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the activity suggestion"
+          },
+          "publicImageUrl": {
+            "type": "string",
+            "description": "The public URL of the image associated with the activity suggestion"
+          },
+          "category": {
+            "type": "string",
+            "description": "The category of the activity suggestion"
+          },
+          "location": {
+            "$ref": "#/components/schemas/location"
+          },
+          "expenseRating": {
+            "$ref": "#/components/schemas/expenseRating"
+          }
+        }
+      },
+      "Address": {
+        "description": "Detailed address information",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "streetNumber": {
+            "type": "string",
+            "description": "Street number (e.g., 123)"
+          },
+          "streetName": {
+            "type": "string",
+            "description": "Street name (e.g., Main St)"
+          },
+          "unit": {
+            "type": "string",
+            "description": "Optional unit or apartment number"
+          },
+          "neighborhood": {
+            "type": "string",
+            "description": "Neighborhood or district"
+          },
+          "city": {
+            "type": "string",
+            "description": "City of the location"
+          },
+          "stateOrProvince": {
+            "type": "string",
+            "description": "State or province of the location"
+          },
+          "postalCode": {
+            "type": "string",
+            "description": "Postal or ZIP code"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country of the location"
+          }
+        }
+      },
+      "blockUserRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "blockeDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "blockedUserId": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "blockerUserId": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "uid": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          }
+        }
+      },
+      "cacheHealthMetrics": {
+        "description": "cache health metrics",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "cacheName": {
+            "type": "string"
+          },
+          "cacheSizeMB": {
+            "type": "integer"
+          },
+          "cacheHitRate": {
+            "type": "number"
+          },
+          "cacheMissRate": {
+            "type": "number"
+          },
+          "cacheEvictionRate": {
+            "type": "number"
+          },
+          "cacheHitCount": {
+            "type": "integer"
+          },
+          "cacheMissCount": {
+            "type": "integer"
+          },
+          "cacheEvictionCount": {
+            "type": "integer"
+          },
+          "cachePutCount": {
+            "type": "integer"
+          },
+          "cacheGetCount": {
+            "type": "integer"
+          },
+          "cacheRemoveCount": {
+            "type": "integer"
+          },
+          "cacheClearCount": {
+            "type": "integer"
+          },
+          "cacheHitRatePercentage": {
+            "type": "number"
+          },
+          "cacheMissRatePercentage": {
+            "type": "number"
+          },
+          "cacheEvictionRatePercentage": {
+            "type": "number"
+          },
+          "cacheHitCountPercentage": {
+            "type": "number"
+          },
+          "cacheMissCountPercentage": {
+            "type": "number"
+          },
+          "cacheEvictionCountPercentage": {
+            "type": "number"
+          },
+          "cachePutCountPercentage": {
+            "type": "number"
+          },
+          "cacheGetCountPercentage": {
+            "type": "number"
+          },
+          "cacheRemoveCountPercentage": {
+            "type": "number"
+          },
+          "cacheClearCountPercentage": {
+            "type": "number"
+          }
+        }
+      },
+      "chat": {
+        "description": "a chat message from one user to another user",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdByUserId": {
+            "description": "the id of the user who created this chat",
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "createdByFirstName": {
+            "description": "the first name of the user who created this chat",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9 ,.'-]+$"
+          },
+          "messageContent": {
+            "type": "string",
+            "pattern": "(\\u00a9|\\u00ae|[\\u2000-\\u3300]|\\ud83c[\\ud000-\\udfff]|\\ud83d[\\ud000-\\udfff]|\\ud83e[\\ud000-\\udfff]|\\w|\\s|\\d|[\\\\?\\\\!\\\\.\\\\$\\\\,\\\\%\\\\&\\\\\"])",
+            "minLength": 0,
+            "maxLength": 2000
+          },
+          "likedByUserIds": {
+            "description": "a list of all the user ids who have liked this chat",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            }
+          }
+        }
+      },
+      "chatSession": {
+        "description": "a logical container representing all chat messages related to a troov",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "status": {
+            "description": "Status of the match request:\n * OPENING_REQUEST  | User has issued a request to join a troov but the troov creator has not yet responded\n * ACTIVE           | Active chat between the participants\n * NON_ACTIVE       | Non active chat between the participants\n * BLOCKED          | One of the chat participants has blocked the other\n",
+            "type": "string",
+            "enum": [
+              "OPENING_REQUEST",
+              "ACTIVE",
+              "NON_ACTIVE",
+              "BLOCKED"
+            ],
+            "default": "ACTIVE"
+          },
+          "troovId": {
+            "description": "the id of the troov this chat session is associated with",
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "troovCreatorUserId": {
+            "description": "the user id of the troov creator",
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "participantUserIds": {
+            "description": "a list of all the chat session participants user ids",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            }
+          },
+          "participantProfiles": {
+            "description": "a list of all the chat session participants profiles",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/userProfileWithUserId"
+            }
+          },
+          "messages": {
+            "description": "a list of all the chats in this chat session",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/chat"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastUpdatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "mostRecentChatUserId": {
+            "description": "the user id of the user who sent the most recent chat",
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "lastViewedBy": {
+            "description": "an array of user ids and when they last viewed the chat session",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "pattern": "^[\\w\\-\\|]+$"
+                },
+                "lastViewedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          "isAdminChatSession": {
+            "description": "whether this is an admin chat",
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "coordinates": {
+        "description": "the coordinates for a location",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "latitude": {
+            "type": "number",
+            "format": "double",
+            "minimum": -90,
+            "maximum": 90,
+            "default": 0
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double",
+            "minimum": -180,
+            "maximum": 180,
+            "default": 0
+          }
+        }
+      },
+      "countryCode": {
+        "type": "string",
+        "enum": [
+          "AD",
+          "AE",
+          "AF",
+          "AG",
+          "AI",
+          "AL",
+          "AM",
+          "AO",
+          "AR",
+          "AS",
+          "AT",
+          "AU",
+          "AW",
+          "AZ",
+          "BA",
+          "BB",
+          "BD",
+          "BE",
+          "BF",
+          "BG",
+          "BH",
+          "BI",
+          "BJ",
+          "BM",
+          "BN",
+          "BO",
+          "BR",
+          "BS",
+          "BT",
+          "BW",
+          "BY",
+          "BZ",
+          "CA",
+          "CD",
+          "CF",
+          "CG",
+          "CH",
+          "CI",
+          "CK",
+          "CL",
+          "CM",
+          "CN",
+          "CO",
+          "CR",
+          "CU",
+          "CV",
+          "CY",
+          "CZ",
+          "DE",
+          "DJ",
+          "DK",
+          "DM",
+          "DO",
+          "DZ",
+          "EC",
+          "EE",
+          "EG",
+          "ER",
+          "ES",
+          "ET",
+          "FI",
+          "FJ",
+          "FK",
+          "FM",
+          "FO",
+          "FR",
+          "GA",
+          "GB",
+          "GD",
+          "GE",
+          "GF",
+          "GH",
+          "GI",
+          "GL",
+          "GM",
+          "GN",
+          "GP",
+          "GQ",
+          "GR",
+          "GT",
+          "GU",
+          "GW",
+          "GY",
+          "HK",
+          "HN",
+          "HR",
+          "HT",
+          "HU",
+          "ID",
+          "IE",
+          "IL",
+          "IN",
+          "IO",
+          "IQ",
+          "IR",
+          "IS",
+          "IT",
+          "JM",
+          "JO",
+          "JP",
+          "KE",
+          "KG",
+          "KH",
+          "KI",
+          "KM",
+          "KN",
+          "KP",
+          "KR",
+          "KW",
+          "KY",
+          "KZ",
+          "LA",
+          "LB",
+          "LC",
+          "LI",
+          "LK",
+          "LR",
+          "LS",
+          "LT",
+          "LU",
+          "LV",
+          "LY",
+          "MA",
+          "MC",
+          "MD",
+          "ME",
+          "MG",
+          "MH",
+          "MK",
+          "ML",
+          "MM",
+          "MN",
+          "MO",
+          "MP",
+          "MQ",
+          "MR",
+          "MS",
+          "MT",
+          "MU",
+          "MV",
+          "MW",
+          "MX",
+          "MY",
+          "MZ",
+          "NA",
+          "NC",
+          "NE",
+          "NF",
+          "NG",
+          "NI",
+          "NL",
+          "NO",
+          "NP",
+          "NR",
+          "NU",
+          "NZ",
+          "OM",
+          "PA",
+          "PE",
+          "PF",
+          "PG",
+          "PH",
+          "PK",
+          "PL",
+          "PM",
+          "PR",
+          "PS",
+          "PT",
+          "PW",
+          "PY",
+          "QA",
+          "RE",
+          "RO",
+          "RS",
+          "RU",
+          "RW",
+          "SA",
+          "SB",
+          "SC",
+          "SD",
+          "SE",
+          "SG",
+          "SH",
+          "SI",
+          "SK",
+          "SL",
+          "SM",
+          "SN",
+          "SO",
+          "SR",
+          "SS",
+          "ST",
+          "SV",
+          "SY",
+          "SZ",
+          "TC",
+          "TD",
+          "TG",
+          "TH",
+          "TJ",
+          "TK",
+          "TL",
+          "TM",
+          "TN",
+          "TO",
+          "TR",
+          "TT",
+          "TV",
+          "TW",
+          "TZ",
+          "UA",
+          "UG",
+          "US",
+          "UY",
+          "UZ",
+          "VC",
+          "VE",
+          "VG",
+          "VI",
+          "VN",
+          "VU",
+          "WF",
+          "WS",
+          "XK",
+          "YE",
+          "ZA",
+          "ZM",
+          "ZW"
+        ]
+      },
+      "countryPhoneCode": {
+        "type": "string",
+        "enum": [
+          "+1",
+          "+1242",
+          "+1246",
+          "+1264",
+          "+1268",
+          "+1284",
+          "+1340",
+          "+1345",
+          "+1441",
+          "+1473",
+          "+1649",
+          "+1664",
+          "+1670",
+          "+1671",
+          "+1684",
+          "+1758",
+          "+1767",
+          "+1784",
+          "+1809",
+          "+1868",
+          "+1869",
+          "+1876",
+          "+1939",
+          "+20",
+          "+211",
+          "+212",
+          "+213",
+          "+216",
+          "+218",
+          "+220",
+          "+221",
+          "+222",
+          "+223",
+          "+224",
+          "+225",
+          "+226",
+          "+227",
+          "+228",
+          "+229",
+          "+230",
+          "+231",
+          "+232",
+          "+233",
+          "+234",
+          "+235",
+          "+236",
+          "+237",
+          "+238",
+          "+239",
+          "+240",
+          "+241",
+          "+242",
+          "+243",
+          "+244",
+          "+245",
+          "+246",
+          "+248",
+          "+249",
+          "+250",
+          "+251",
+          "+252",
+          "+253",
+          "+254",
+          "+255",
+          "+256",
+          "+257",
+          "+258",
+          "+260",
+          "+261",
+          "+262",
+          "+263",
+          "+264",
+          "+265",
+          "+266",
+          "+267",
+          "+268",
+          "+269",
+          "+27",
+          "+290",
+          "+291",
+          "+297",
+          "+298",
+          "+299",
+          "+30",
+          "+31",
+          "+32",
+          "+33",
+          "+34",
+          "+350",
+          "+351",
+          "+352",
+          "+353",
+          "+354",
+          "+355",
+          "+356",
+          "+357",
+          "+358",
+          "+359",
+          "+36",
+          "+370",
+          "+371",
+          "+372",
+          "+373",
+          "+374",
+          "+375",
+          "+376",
+          "+377",
+          "+378",
+          "+380",
+          "+381",
+          "+382",
+          "+383",
+          "+385",
+          "+386",
+          "+387",
+          "+389",
+          "+39",
+          "+40",
+          "+41",
+          "+420",
+          "+421",
+          "+423",
+          "+43",
+          "+44",
+          "+45",
+          "+46",
+          "+47",
+          "+48",
+          "+49",
+          "+500",
+          "+501",
+          "+502",
+          "+503",
+          "+504",
+          "+505",
+          "+506",
+          "+507",
+          "+508",
+          "+509",
+          "+51",
+          "+52",
+          "+53",
+          "+54",
+          "+55",
+          "+56",
+          "+57",
+          "+58",
+          "+590",
+          "+591",
+          "+592",
+          "+593",
+          "+594",
+          "+595",
+          "+596",
+          "+597",
+          "+598",
+          "+60",
+          "+61",
+          "+62",
+          "+63",
+          "+64",
+          "+65",
+          "+66",
+          "+670",
+          "+672",
+          "+673",
+          "+674",
+          "+675",
+          "+676",
+          "+677",
+          "+678",
+          "+679",
+          "+680",
+          "+681",
+          "+682",
+          "+683",
+          "+685",
+          "+686",
+          "+687",
+          "+688",
+          "+689",
+          "+690",
+          "+691",
+          "+692",
+          "+7",
+          "+81",
+          "+82",
+          "+84",
+          "+850",
+          "+852",
+          "+853",
+          "+855",
+          "+856",
+          "+86",
+          "+880",
+          "+886",
+          "+90",
+          "+91",
+          "+92",
+          "+93",
+          "+94",
+          "+95",
+          "+960",
+          "+961",
+          "+962",
+          "+963",
+          "+964",
+          "+965",
+          "+966",
+          "+967",
+          "+968",
+          "+970",
+          "+971",
+          "+972",
+          "+973",
+          "+974",
+          "+975",
+          "+976",
+          "+977",
+          "+98",
+          "+992",
+          "+993",
+          "+994",
+          "+995",
+          "+996",
+          "+998"
+        ]
+      },
+      "countryName": {
+        "type": "string",
+        "enum": [
+          "Afghanistan",
+          "Albania",
+          "Algeria",
+          "American Samoa",
+          "Andorra",
+          "Angola",
+          "Anguilla",
+          "Antigua & Barbuda",
+          "Argentina",
+          "Armenia",
+          "Aruba",
+          "Australia",
+          "Austria",
+          "Azerbaijan",
+          "Bahamas",
+          "Bahrain",
+          "Bangladesh",
+          "Barbados",
+          "Belarus",
+          "Belgium",
+          "Belize",
+          "Benin",
+          "Bermuda",
+          "Bhutan",
+          "Bolivia",
+          "Bosnia & Herzegovina",
+          "Botswana",
+          "Brazil",
+          "British Virgin Islands",
+          "Brunei Darussalam",
+          "Bulgaria",
+          "Burkina Faso",
+          "Burundi",
+          "Cambodia",
+          "Cameroon",
+          "Canada",
+          "Cape Verde",
+          "Cayman Islands",
+          "Central African Rep.",
+          "Chad",
+          "Chile",
+          "China",
+          "Colombia",
+          "Comoros",
+          "Congo (Dem. Rep.)",
+          "Congo (Rep.)",
+          "Cook Islands",
+          "Costa Rica",
+          "Cote dIvoire",
+          "Croatia",
+          "Cuba",
+          "Cyprus",
+          "Czech Republic",
+          "Denmark",
+          "Diego Garcia",
+          "Djibouti",
+          "Dominica",
+          "Dominican Rep.",
+          "Ecuador",
+          "Egypt",
+          "El Salvador",
+          "Equatorial Guinea",
+          "Eritrea",
+          "Estonia",
+          "Eswatini",
+          "Ethiopia",
+          "Falkland Islands",
+          "Faroe Islands",
+          "Fiji",
+          "Finland",
+          "France",
+          "French Guiana",
+          "French Polynesia",
+          "Gabon",
+          "Gambia",
+          "Georgia",
+          "Germany",
+          "Ghana",
+          "Gibraltar",
+          "Greece",
+          "Greenland",
+          "Grenada",
+          "Guadeloupe",
+          "Guam",
+          "Guatemala",
+          "Guinea",
+          "Guinea-Bissau",
+          "Guyana",
+          "Haiti",
+          "Honduras",
+          "Hong Kong",
+          "Hungary",
+          "Iceland",
+          "India",
+          "Indonesia",
+          "Iran",
+          "Iraq",
+          "Ireland",
+          "Israel",
+          "Italy",
+          "Jamaica",
+          "Japan",
+          "Jordan",
+          "Kazakhstan",
+          "Kenya",
+          "Kiribati",
+          "Kosovo",
+          "Kuwait",
+          "Kyrgyzstan",
+          "Laos",
+          "Latvia",
+          "Lebanon",
+          "Lesotho",
+          "Liberia",
+          "Libya",
+          "Liechtenstein",
+          "Lithuania",
+          "Luxembourg",
+          "Macau",
+          "Macedonia",
+          "Madagascar",
+          "Malawi",
+          "Malaysia",
+          "Maldives",
+          "Mali",
+          "Malta",
+          "Marshall Islands",
+          "Martinique",
+          "Mauritania",
+          "Mauritius",
+          "Mexico",
+          "Micronesia",
+          "Moldova",
+          "Monaco",
+          "Mongolia",
+          "Montenegro",
+          "Montserrat",
+          "Morocco",
+          "Mozambique",
+          "Myanmar",
+          "Namibia",
+          "Nauru",
+          "Nepal",
+          "Netherlands",
+          "New Caledonia",
+          "New Zealand",
+          "Nicaragua",
+          "Niger",
+          "Nigeria",
+          "Niue",
+          "Norfolk Island",
+          "North Korea",
+          "Northern Mariana Islands",
+          "Norway",
+          "Oman",
+          "Pakistan",
+          "Palau",
+          "Palestine",
+          "Panama",
+          "Papua New Guinea",
+          "Paraguay",
+          "Peru",
+          "Philippines",
+          "Poland",
+          "Portugal",
+          "Puerto Rico",
+          "Qatar",
+          "Reunion",
+          "Romania",
+          "Russia",
+          "Rwanda",
+          "Saint Helena",
+          "Saint Kitts & Nevis",
+          "Saint Lucia",
+          "Saint Pierre & Miquelon",
+          "Saint Vincent & the Grenadines",
+          "Samoa",
+          "San Marino",
+          "Sao Tome & Principe",
+          "Saudi Arabia",
+          "Senegal",
+          "Serbia",
+          "Seychelles",
+          "Sierra Leone",
+          "Singapore",
+          "Slovakia",
+          "Slovenia",
+          "Solomon Islands",
+          "Somalia",
+          "South Africa",
+          "South Korea",
+          "South Sudan",
+          "Spain",
+          "Sri Lanka",
+          "Sudan",
+          "Suriname",
+          "Sweden",
+          "Switzerland",
+          "Syria",
+          "Taiwan",
+          "Tajikistan",
+          "Tanzania",
+          "Thailand",
+          "Timor-Leste",
+          "Togo",
+          "Tokelau",
+          "Tonga",
+          "Trinidad & Tobago",
+          "Tunisia",
+          "Turkey",
+          "Turkmenistan",
+          "Turks & Caicos Islands",
+          "Tuvalu",
+          "USA",
+          "Uganda",
+          "Ukraine",
+          "United Arab Emirates",
+          "United Kingdom",
+          "Uruguay",
+          "Uzbekistan",
+          "Vanuatu",
+          "Venezuela",
+          "Vietnam",
+          "Virgin Islands, British",
+          "Virgin Islands, U.S.",
+          "Wallis & Futuna",
+          "Yemen",
+          "Zambia",
+          "Zimbabwe"
+        ]
+      },
+      "dayOfWeek": {
+        "type": "string",
+        "enum": [
+          "MONDAY",
+          "TUESDAY",
+          "WEDNESDAY",
+          "THURSDAY",
+          "FRIDAY",
+          "SATURDAY",
+          "SUNDAY"
+        ]
+      },
+      "education": {
+        "type": "string",
+        "enum": [
+          "GED",
+          "ASSOCIATES",
+          "BACHELORS",
+          "MASTERS",
+          "PHD",
+          "NOT_DISCLOSED"
+        ]
+      },
+      "ethnicity": {
+        "description": "* AMERICAN_INDIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * BLACK - A person having origins in any of the black racial groups of Africa * EAST_ASIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * HISPANIC - A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin * MIDDLE_EASTERN - For example Egypt * PACIFIC_ISLANDER - A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands. * SOUTH_ASIAN - For example India * WHITE - A person having origins in any of the original peoples of Europe, the Middle East, or North Africa * NOT_DISCLOSED\n",
+        "type": "string",
+        "enum": [
+          "AMERICAN_INDIAN",
+          "BLACK",
+          "EAST_ASIAN",
+          "HISPANIC",
+          "MIDDLE_EASTERN",
+          "PACIFIC_ISLANDER",
+          "SOUTH_ASIAN",
+          "WHITE",
+          "NOT_DISCLOSED"
+        ]
+      },
+      "expenseRating": {
+        "type": "string",
+        "description": "Cost of the date:\n * FREE  | no cost\n * $     | < $20\n * $$    | $20 - $40\n * $$$   | $40 - $100\n * $$$$  | > $100\n",
+        "enum": [
+          "FREE",
+          "$",
+          "$$",
+          "$$$",
+          "$$$$"
+        ]
+      },
+      "gender": {
+        "type": "string",
+        "enum": [
+          "FEMALE",
+          "MALE",
+          "NON_BINARY",
+          "OTHER"
+        ]
+      },
+      "healthStatus": {
+        "type": "string",
+        "enum": [
+          "HEALTHY",
+          "WARNING",
+          "DEGRADED"
+        ]
+      },
+      "marketingChannels": {
+        "type": "string",
+        "enum": [
+          "EMAIL_NEWSLETTER",
+          "NEWS_ARTICLE",
+          "PODCAST",
+          "SEARCH_ENGINE",
+          "SOCIAL_MEDIA_POST",
+          "SOCIAL_MEDIA_AD",
+          "WEBSITE",
+          "WORD_OF_MOUTH",
+          "OTHER"
+        ]
+      },
+      "moderationCodes": {
+        "description": "* DRUGS - Content that promotes or glorifies hard drug use (marijuana is acceptable). * HARASSMENT - Content that is abusive, threatening, or harassing. * HATE_SPEECH - Content that promotes discrimination, hatred, or violence against individuals or groups. * OBSCENITY - Content that contains explicit and gross sexual content. * PROFANITY - Content that contains offensive language, including attempts to mask profanity. * PROMOTION - Only content that contains a url or similar. If the content promotes a specific location, then it is acceptable. * PROSTITUTION - Content that promotes or advertises prostitution or the sale of personal sexual services. * SOLICITATION - Content that solicits or requests personal information or financial information. * VIOLENCE - Content that depicts or promotes violence, including physical harm, sexual harm, emotional harm, and self-harm.\n",
+        "type": "string",
+        "enum": [
+          "DRUGS",
+          "HARASSMENT",
+          "HATE_SPEECH",
+          "OBSCENITY",
+          "PROFANITY",
+          "PROMOTION",
+          "PROSTITUTION",
+          "SOLICITATION",
+          "VIOLENCE"
+        ]
+      },
+      "moderationModel": {
+        "description": "Describes the model that was used to determine the suitability of a troov (could be human review).\n",
+        "type": "string",
+        "enum": [
+          "gpt-4o",
+          "gpt-4o-mini",
+          "human_review"
+        ]
+      },
+      "paginationOrder": {
+        "type": "string",
+        "default": "START_TIME",
+        "enum": [
+          "DISTANCE",
+          "START_TIME"
+        ]
+      },
+      "politicalAffiliation": {
+        "type": "string",
+        "enum": [
+          "LIBERAL",
+          "MODERATE",
+          "CONSERVATIVE",
+          "APOLITICAL",
+          "NOT_DISCLOSED"
+        ]
+      },
+      "registrationStep": {
+        "type": "string",
+        "enum": [
+          "DO_IT_LATER_OPTION",
+          "READ_ONLY_BROWSING",
+          "PHONE_NUMBER",
+          "CODE_SENT",
+          "CODE_RECEIVED",
+          "MARKETING_CHANNELS",
+          "RELATIONSHIP_INTERESTS",
+          "ACTIVITY_INTERESTS",
+          "NAME_AND_BIRTHDAY",
+          "GENDER",
+          "ALMA_MATER_OCCUPATION_COMPANY",
+          "HEIGHT",
+          "EDUCATION",
+          "ETHNICITY",
+          "POLITICS",
+          "RELIGION",
+          "IMAGE_UPLOAD",
+          "TUTORIAL",
+          "COMPLETE"
+        ]
+      },
+      "relationshipInterest": {
+        "type": "string",
+        "enum": [
+          "DATING",
+          "DATING_SHORT_TERM",
+          "DATING_LONG_TERM",
+          "FRIENDSHIP",
+          "COLLABORATION"
+        ]
+      },
+      "religion": {
+        "type": "string",
+        "enum": [
+          "AGNOSTIC",
+          "ATHEIST",
+          "BUDDHIST",
+          "CHRISTIAN",
+          "HINDU",
+          "JEWISH",
+          "MUSLIM",
+          "OTHER",
+          "NOT_DISCLOSED"
+        ]
+      },
+      "supportCategoryType": {
+        "type": "string",
+        "enum": [
+          "BUG_REPORT",
+          "COMPLAINT",
+          "FEATURE_REQUEST",
+          "FEEDBACK",
+          "GENERAL_INQUIRY",
+          "REQUEST_FOR_HUMAN",
+          "NON_TROOV_INQUIRY"
+        ]
+      },
+      "timeOfDay": {
+        "description": "* EARLY_MORNING: 3am – 8am * MORNING: 8am – 12pm * AFTERNOON: 12pm – 5pm * EVENING: 5pm – 8pm * NIGHT: 8pm – 3am\n",
+        "type": "string",
+        "enum": [
+          "EARLY_MORNING",
+          "MORNING",
+          "AFTERNOON",
+          "EVENING",
+          "NIGHT"
+        ]
+      },
+      "troovActivityCategory": {
+        "type": "string",
+        "enum": [
+          "CULTURAL_EXPERIENCES",
+          "FUN_AND_GAMES",
+          "GROWTH_AND_COLLABORATION",
+          "INDOOR_ENTERTAINMENT",
+          "OUTDOOR_ADVENTURES",
+          "RELAXING_ESCAPES",
+          "SPORTS_AND_FITNESS",
+          "OTHER"
+        ]
+      },
+      "discoverFilterSettings": {
+        "description": "all relevant attributes for filtering troovs",
+        "type": "object",
+        "required": [
+          "troovFilters",
+          "profileFilters"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "troovFilters": {
+            "$ref": "#/components/schemas/troovCoreDetailFilterAttributes"
+          },
+          "profileFilters": {
+            "$ref": "#/components/schemas/profileFilterAttributes"
+          },
+          "initialPageLimit": {
+            "description": "number of troovs to be fetched initially",
+            "type": "integer",
+            "default": 50,
+            "minimum": 1,
+            "maximum": 150
+          },
+          "perPageLimit": {
+            "description": "number of troovs to be fetched per page while paginating",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 25
+          },
+          "nextPageToken": {
+            "description": "token to fetch next page of troovs while paginating",
+            "type": "string"
+          },
+          "paginationOrder": {
+            "$ref": "#/components/schemas/paginationOrder"
+          },
+          "limit": {
+            "description": "total number of troovs that can be fetched from a single query",
+            "type": "integer",
+            "default": 150,
+            "minimum": 1,
+            "maximum": 150
+          },
+          "testingMode": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "discoverTroovsResponse": {
+        "description": "represents the response of the discover troovs endpoint",
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "troovs",
+          "numTroovsFound"
+        ],
+        "properties": {
+          "troovs": {
+            "description": "a list of troovs",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/troov"
+            }
+          },
+          "nextPageToken": {
+            "description": "A token to be used to fetch the next page of results, null if there are no more results.",
+            "type": "string",
+            "nullable": true
+          },
+          "numTroovsFound": {
+            "description": "total number of troovs found in the search query",
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "healthStatusResponse": {
+        "description": "The api health status for each environment",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "devEnv": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "$ref": "#/components/schemas/healthStatus"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "downtimeEndEstimate": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "default": null
+              }
+            }
+          },
+          "stagingEnv": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "$ref": "#/components/schemas/healthStatus"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "downtimeEndEstimate": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "default": null
+              }
+            }
+          },
+          "prodEnv": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "$ref": "#/components/schemas/healthStatus"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "downtimeEndEstimate": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "default": null
+              }
+            }
+          }
+        }
+      },
+      "location": {
+        "description": "information pertaining to a specific location",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^.+$"
+          },
+          "placeId": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "coordinates": {
+            "$ref": "#/components/schemas/coordinates"
+          },
+          "geoHash": {
+            "type": "string"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          }
+        }
+      },
+      "locationQueryable": {
+        "description": "Used to query for location and combines hidden and visible location information. Note that name and placeId will be null if the location is hidden and the queryableCoordinates and queryableGeoHash will be based of a randomized centroid.\n",
+        "type": "object",
+        "nullable": true,
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^.+$",
+            "nullable": true
+          },
+          "placeId": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$",
+            "nullable": true
+          },
+          "queryableCoordinates": {
+            "$ref": "#/components/schemas/coordinates"
+          },
+          "queryableGeoHash": {
+            "type": "string"
+          },
+          "hiddenRadius": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "length": {
+                "type": "number",
+                "format": "double"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "METERS"
+                ]
+              }
+            }
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          }
+        }
+      },
+      "locationIndicator": {
+        "required": [
+          "hidden"
+        ],
+        "description": "Instead of using the composition anyOf because it creates additional complexity to support on the client side, we define a composition class which handles both the case where the location is provided and hidden. When location is hidden, then only the location field will be empty.\n",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "hidden": {
+            "description": "indicates if the location is hidden from the consumer",
+            "type": "boolean",
+            "default": false
+          },
+          "queryableLocation": {
+            "$ref": "#/components/schemas/locationQueryable"
+          },
+          "location": {
+            "$ref": "#/components/schemas/location"
+          },
+          "distanceFromSearchLocation": {
+            "type": "object",
+            "properties": {
+              "length": {
+                "type": "number",
+                "format": "double"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "METERS"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "notification": {
+        "description": "a user notification",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "userId": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "message": {
+            "type": "string",
+            "pattern": "(\\u00a9|\\u00ae|[\\u2000-\\u3300]|\\ud83c[\\ud000-\\udfff]|\\ud83d[\\ud000-\\udfff]|\\ud83e[\\ud000-\\udfff]|\\w|\\s|\\d|[\\\\?\\\\!\\\\.\\\\$\\\\,\\\\%\\\\&\\\\\"])",
+            "minLength": 0,
+            "maxLength": 500
+          },
+          "apiUrlUpdatePaths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            }
+          },
+          "type": {
+            "$ref": "#/components/schemas/notificationType"
+          },
+          "importanceRating": {
+            "description": "lower numbers are more important",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 2,
+            "default": 2
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "description": "Status of the notification:\n * READ      | The user has read the notification\n * UNREAD    | The user has not read the notification\n * CANCELLED | The notification has been cancelled\n",
+            "type": "string",
+            "enum": [
+              "READ",
+              "UNREAD",
+              "CANCELLED"
+            ],
+            "default": "CANCELLED"
+          },
+          "statusUpdatedAt": {
+            "description": "the last time at which the status was updated",
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "notificationType": {
+        "type": "string",
+        "enum": [
+          "CHAT_SUPPORT_ANNOUNCEMENT",
+          "CHAT_REQUEST",
+          "CHAT_NEW_REPLY",
+          "DISCOVER_REFRESH",
+          "TROOV_CANCELLED",
+          "TROOV_CONFIRMED",
+          "TROOV_JOIN_REQUEST_CANCELLED",
+          "TROOV_NEW_JOIN_REQUEST",
+          "TROOV_START_TIME_CHANGED"
+        ]
+      },
+      "phoneNumber": {
+        "description": "a user phone number",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "countryName": {
+            "$ref": "#/components/schemas/countryName"
+          },
+          "countryCode": {
+            "$ref": "#/components/schemas/countryCode"
+          },
+          "countryPhoneCode": {
+            "$ref": "#/components/schemas/countryPhoneCode"
+          },
+          "localNumber": {
+            "type": "string",
+            "pattern": "^\\d{1,12}$"
+          }
+        }
+      },
+      "phoneVerification": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "verified": {
+            "type": "boolean",
+            "default": false
+          },
+          "latestVerificationCode": {
+            "type": "integer"
+          },
+          "latestVerificationId": {
+            "type": "string"
+          },
+          "lastVerifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "verificationCodesSentCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "verificationFailedAttemptsCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "verificationCodeSentAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "verificationExpiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "profileFilterAttributes": {
+        "description": "properties on a User's Profile which are filterable",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "minAge": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 18,
+            "maximum": 100,
+            "default": 18
+          },
+          "maxAge": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 18,
+            "maximum": 100,
+            "default": 100
+          },
+          "educationHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/education"
+            }
+          },
+          "ethnicity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ethnicity"
+            }
+          },
+          "gender": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/gender"
+            }
+          },
+          "minHeight": {
+            "type": "object",
+            "properties": {
+              "length": {
+                "type": "integer"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "IN",
+                  "CM"
+                ],
+                "default": "IN"
+              }
+            }
+          },
+          "maxHeight": {
+            "type": "object",
+            "properties": {
+              "length": {
+                "type": "integer"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "IN",
+                  "CM"
+                ],
+                "default": "IN"
+              }
+            }
+          },
+          "politics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/politicalAffiliation"
+            }
+          },
+          "religion": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/religion"
+            }
+          },
+          "verified": {
+            "description": "indicates whether or not the user's profile is verified",
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "profileMedia": {
+        "description": "represents any form of media associated with a profile",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "mediaId": {
+            "type": "string",
+            "description": "A unique reference to the Image when it is being created."
+          },
+          "mediaType": {
+            "type": "string",
+            "enum": [
+              "IMAGE",
+              "VIDEO",
+              "AUDIO"
+            ]
+          },
+          "rank": {
+            "description": "The relative ordering of the profile media",
+            "type": "integer"
+          },
+          "size": {
+            "description": "size of the file in bytes",
+            "type": "number"
+          },
+          "mediaUrl": {
+            "description": "The location of the media. This is set internally and only included on return responses.",
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "supportChatResponse": {
+        "description": "Only chats which are created from the troov support bot",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/supportCategoryType"
+          },
+          "originalMessage": {
+            "type": "string"
+          },
+          "response": {
+            "type": "string"
+          },
+          "categoryJustification": {
+            "type": "string"
+          },
+          "chatSessionId": {
+            "type": "string"
+          },
+          "categorizedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "requesterUserId": {
+            "type": "string"
+          }
+        }
+      },
+      "troov": {
+        "description": "The primary date object Input fields (POST? vs. GET?)",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "troovId": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "createdBy": {
+            "$ref": "#/components/schemas/userProfileWithUserId"
+          },
+          "status": {
+            "$ref": "#/components/schemas/troovStatus"
+          },
+          "locationDetails": {
+            "$ref": "#/components/schemas/locationIndicator"
+          },
+          "troovCoreDetails": {
+            "$ref": "#/components/schemas/troovCoreDetails"
+          },
+          "matchRequests": {
+            "description": "a list of all the match requests",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/troovMatchRequest"
+            }
+          },
+          "matchRequestsCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "confirmedMatchRequest": {
+            "$ref": "#/components/schemas/troovMatchRequest"
+          },
+          "indexedFields": {
+            "description": "helper query lookup fields (related to Firestore implementation)",
+            "type": "object",
+            "properties": {
+              "matchRequestUserIds": {
+                "description": "a list of all the user ids which have requested a match for this troov",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[\\w\\-\\|]+$"
+                }
+              },
+              "confirmedUserIds": {
+                "description": "the users ids of the creator and confirmed matcher",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[\\w\\-\\|]+$"
+                }
+              },
+              "notifyUserIds": {
+                "description": "a list of all the user ids which should be notified upon updates to this troov",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[\\w\\-\\|]+$"
+                }
+              },
+              "activityCategorySubLabels": {
+                "description": "a list of all the activity categories and concatenated sub labels associated with the troov for searching\n",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastUpdatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "participantReviews": {
+            "description": "a list of all the reviews for the participants of the troov\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/troovReview"
+            }
+          },
+          "viewedBy": {
+            "description": "a list of all the user ids which have viewed this troov\n",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "distinctViewsCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "suitabilityScore": {
+            "description": "The suitability score of the troov from 0 to 1 where 0 is the worst and 1 is the best\n",
+            "type": "number",
+            "format": "float",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "activitySubLabels": {
+            "description": "a list of all the activity sub labels associated with the troov\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/troovActivity"
+            }
+          },
+          "activityCategories": {
+            "description": "a list of all the activity categories associated with the troov\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/troovActivityCategory"
+            }
+          },
+          "isTestTroov": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "troovActivity": {
+        "description": "Defines a troov activity",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "$ref": "#/components/schemas/troovActivityCategory"
+          },
+          "name": {
+            "type": "string"
+          },
+          "emoji": {
+            "type": "string"
+          }
+        }
+      },
+      "troovCoreDetailFilterAttributes": {
+        "description": "all filters relating to the details of the troov",
+        "type": "object",
+        "properties": {
+          "originCoordinates": {
+            "$ref": "#/components/schemas/coordinates"
+          },
+          "maximumDistance": {
+            "type": "object",
+            "properties": {
+              "length": {
+                "type": "number",
+                "format": "double",
+                "default": 1,
+                "minimum": 0.1,
+                "maximum": 10000
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "MILE"
+                ]
+              }
+            }
+          },
+          "daysOfWeek": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/dayOfWeek"
+            }
+          },
+          "dateStartTimings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/timeOfDay"
+            }
+          },
+          "expenseRatings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/expenseRating"
+            }
+          },
+          "relationshipInterests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/relationshipInterest"
+            }
+          },
+          "startTimeRange": {
+            "description": "start of range filter for date start times",
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTimeRange": {
+            "description": "end of range filter for date start times",
+            "type": "string",
+            "format": "date-time"
+          },
+          "filterTimezone": {
+            "description": "* GMT: Greenwich Mean Time (displays the same time as UTC) * EDT: America/New_York - Eastern Daylight Time - summer/spring * EST: America/New_York - Eastern Standard Time - winter/autumn * CDT: America/Chicago - Central Daylight Time - summer/spring * CST: America/Chicago - Central Standard Time - winter/autumn * MDT: America/Denver - Mountain Daylight Time - summer/spring * MST: America/Denver - Mountain Standard Time - winter/autumn * PDT: America/Los_Angeles - Pacific Daylight Time - summer/spring * PST: America/Los_Angeles - Pacific Standard Time - winter/autumn\n",
+            "type": "string",
+            "enum": [
+              "GMT",
+              "EDT",
+              "EST",
+              "CDT",
+              "CST",
+              "MDT",
+              "MST",
+              "PDT",
+              "PST"
+            ],
+            "default": "EST"
+          }
+        }
+      },
+      "troovCoreDetails": {
+        "description": "Contains the details were are essential to a Troov",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "description": "title for the date which appears in all the date preview tiles",
+            "type": "string",
+            "pattern": "^.+$",
+            "minLength": 5,
+            "maxLength": 75
+          },
+          "details": {
+            "description": "any additional descriptions that the user would like to add to the date",
+            "type": "string",
+            "pattern": "[\\S\\s]*",
+            "minLength": 5,
+            "maxLength": 250
+          },
+          "startTime": {
+            "description": "the date's start time",
+            "type": "string",
+            "format": "date-time"
+          },
+          "expenseRating": {
+            "$ref": "#/components/schemas/expenseRating"
+          },
+          "tags": {
+            "description": "users will assign free form text tags to each date to improve searchability",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 20
+            },
+            "example": [
+              "coffee",
+              "talking"
+            ]
+          },
+          "relationshipInterests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/relationshipInterest"
+            },
+            "default": [
+              "FRIENDSHIP",
+              "DATING_SHORT_TERM",
+              "DATING_LONG_TERM"
+            ]
+          }
+        }
+      },
+      "troovMatchRequest": {
+        "description": "A single instance of a match request initiated by a user wanting to join a troov.",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "description": "Status of the match request:\n * CONFIRMED   | The creator of the troov has approved the request\n * DECLINED    | The creator of the troov has declined this request\n * PENDING     | The requester is still pending a reply from the troov creator\n * CANCELLED   | The requester has cancelled this troov request\n * EXPIRED     | This troov request has expired\n",
+            "type": "string",
+            "enum": [
+              "CONFIRMED",
+              "DECLINED",
+              "PENDING",
+              "CANCELLED",
+              "EXPIRED"
+            ],
+            "default": "PENDING"
+          },
+          "requester": {
+            "$ref": "#/components/schemas/userProfileWithUserId"
+          },
+          "requestedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "statusUpdatedAt": {
+            "description": "the last time at which the status was updated",
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastStatus": {
+            "description": "the prior status",
+            "type": "string",
+            "nullable": true
+          },
+          "openingChatMessage": {
+            "description": "store the first message here for easy accessibility to the frontend",
+            "type": "string",
+            "nullable": true
+          },
+          "chatSessionId": {
+            "description": "the id of the chat session associated with this troov match request",
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "troovId": {
+            "description": "the troov to which this request belongs",
+            "type": "string"
+          }
+        }
+      },
+      "troovModerationResponse": {
+        "type": "object",
+        "properties": {
+          "modelUsed": {
+            "description": "The m\n",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 100
+          },
+          "moderate": {
+            "description": "Indicates if the troov should be moderated\n",
+            "type": "boolean"
+          },
+          "suitabilityScore": {
+            "description": "The suitability score of the troov\n",
+            "type": "number",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "scoreJustification": {
+            "description": "The justification for the suitability score\n",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 300
+          },
+          "categoryScores": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "$ref": "#/components/schemas/moderationCodes"
+                },
+                "score": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "troovReview": {
+        "description": "The troov review object\n",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "troovReviewId": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "reviewerUserId": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "troovCreatorUserId": {
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$"
+          },
+          "rating": {
+            "type": "integer",
+            "description": "The rating of the troov from 1 to 5 where 1 is the worst and 5 is the best\n",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "notes": {
+            "type": "string",
+            "description": "The notes of the troov review\n",
+            "minLength": 0,
+            "maxLength": 300
+          },
+          "allParticipantsShowedUp": {
+            "type": "boolean",
+            "description": "Indicates if all participants showed up to the troov\n"
+          },
+          "participantsMatchedProfileAttributes": {
+            "type": "boolean",
+            "description": "Indicates if the participants matched their profile attributes (e.g. name, profile photos, etc.)\n"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastUpdatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "troovSearchable": {
+        "description": "Subset of searchable fields on a troov",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          },
+          "placeName": {
+            "type": "string",
+            "default": ""
+          },
+          "isHiddenLocation": {
+            "type": "boolean"
+          },
+          "activityCategories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "activitySubLabels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "description": "Users will assign free-form text tags to each date to improve searchability",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 20
+            },
+            "example": [
+              "coffee",
+              "talking"
+            ]
+          },
+          "startTime": {
+            "type": "integer",
+            "description": "Unix timestamp (since Typesense doesn't support native datetime)"
+          },
+          "coordinates": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "Array of latitude and longitude"
+          },
+          "createdByGender": {
+            "type": "string"
+          },
+          "relationshipInterests": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isTestTroov": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "troovStatus": {
+        "description": "Status of the match request:\n * CONFIRMED                 | The creator of the troov has approved the match request\n * OPEN                      | The troov creator has not confirmed with any other user\n * CANCELLED_BY_CREATOR      | The troov creator cancelled this troov\n * CANCELLED_BY_REQUESTER    | The requester cancelled this troov\n * PENDING_REVIEW            | The troov is completed and pending review\n * COMPLETED                 | The troov creator went on a troov and its confirmed via review\n * NO_SHOW_BY_CREATOR        | The troov creator did not show up to the date\n * NO_SHOW_BY_REQUESTER      | The requester did not show up to the date\n * EXPIRED                   | The troov is past start date with no confirmations\n",
+        "type": "string",
+        "enum": [
+          "CONFIRMED",
+          "OPEN",
+          "CANCELLED_BY_CREATOR",
+          "CANCELLED_BY_REQUESTER",
+          "PENDING_REVIEW",
+          "COMPLETED",
+          "NO_SHOW_BY_CREATOR",
+          "NO_SHOW_BY_REQUESTER",
+          "EXPIRED"
+        ]
+      },
+      "usageStatistics": {
+        "description": "Represents the usage statistics for a user\n",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "troovsCreatedCount": {
+            "type": "integer",
+            "description": "The number of troovs created by the user\n",
+            "minimum": 0
+          },
+          "troovsConfirmedCount": {
+            "type": "integer",
+            "description": "The number of troovs confirmed by the user\n",
+            "minimum": 0
+          },
+          "troovJoinRequestsCount": {
+            "type": "integer",
+            "description": "The number of troov join requests made by the user\n",
+            "minimum": 0
+          },
+          "troovsViewedCount": {
+            "type": "integer",
+            "description": "The number of troovs viewed by the user\n",
+            "minimum": 0
+          }
+        }
+      },
+      "user": {
+        "description": "All data related to a User in the application",
+        "type": "object",
+        "required": [
+          "userId"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "description": "represents a unique identifier for all users in the application",
+            "type": "string",
+            "pattern": "^[\\w\\-\\|]+$",
+            "minLength": 25,
+            "maxLength": 75
+          },
+          "firstName": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9 ,.'-]+$",
+            "minLength": 1,
+            "maxLength": 75
+          },
+          "lastName": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9 ,.'-]+$",
+            "minLength": 0,
+            "maxLength": 75
+          },
+          "active": {
+            "description": "indicates if the user's account is active",
+            "type": "boolean"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "heardOfTroovFrom": {
+            "$ref": "#/components/schemas/marketingChannels"
+          },
+          "phoneNumber": {
+            "$ref": "#/components/schemas/phoneNumber"
+          },
+          "numCredits": {
+            "description": "users can use app credits for access to enhanced features",
+            "type": "integer",
+            "format": "int64"
+          },
+          "phoneNumberVerification": {
+            "description": "determines if the user's phone number has been verified",
+            "$ref": "#/components/schemas/phoneVerification"
+          },
+          "iOSDeviceToken": {
+            "description": "user iOS device 32 char token found under didRegisterForRemoteNotificationsWithDeviceToken (but larger on simulator)",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9 ,.'-]+$",
+            "minLength": 30,
+            "maxLength": 180,
+            "nullable": true
+          },
+          "lastLoggedInAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastUpdatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userProfile": {
+            "$ref": "#/components/schemas/userProfile"
+          },
+          "blockedUsers": {
+            "description": "all the users which this user has blocked",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/blockUserRequest"
+            }
+          },
+          "registrationStatus": {
+            "$ref": "#/components/schemas/registrationStep"
+          },
+          "troovReviews": {
+            "description": "all the reviews for the user",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/troovReview"
+            }
+          },
+          "usageStatistics": {
+            "$ref": "#/components/schemas/usageStatistics"
+          },
+          "isTestUser": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "userProfile": {
+        "description": "all properties related to the user's public profile",
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "age": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 18,
+            "maximum": 100
+          },
+          "activityInterests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/troovActivity"
+            }
+          },
+          "almaMater": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^$|[A-Za-z0-9 .]+$",
+              "minLength": 0,
+              "maxLength": 75
+            }
+          },
+          "bio": {
+            "type": "string",
+            "pattern": "(\\u00a9|\\u00ae|[\\u2000-\\u3300]|\\ud83c[\\ud000-\\udfff]|\\ud83d[\\ud000-\\udfff]|\\ud83e[\\ud000-\\udfff]|\\w|\\s|\\d|[\\\\?\\\\!\\\\.\\\\$\\\\,\\\\%\\\\&\\\\\"])",
+            "minLength": 0,
+            "maxLength": 300
+          },
+          "company": {
+            "type": "string",
+            "pattern": "^$|[A-Za-z0-9 .]+$",
+            "minLength": 0,
+            "maxLength": 75
+          },
+          "education": {
+            "$ref": "#/components/schemas/education"
+          },
+          "ethnicity": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ethnicity"
+            }
+          },
+          "firstName": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9 ,.'-]+$",
+            "minLength": 0,
+            "maxLength": 75
+          },
+          "gender": {
+            "$ref": "#/components/schemas/gender"
+          },
+          "height": {
+            "type": "object",
+            "properties": {
+              "length": {
+                "type": "integer"
+              },
+              "unit": {
+                "type": "string",
+                "enum": [
+                  "IN",
+                  "CM"
+                ]
+              }
+            }
+          },
+          "interestedIn": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/gender"
+            }
+          },
+          "lowResThumbnail": {
+            "$ref": "#/components/schemas/profileMedia"
+          },
+          "numDatesCompleted": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "numDatesFlaked": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "occupation": {
+            "type": "string",
+            "pattern": "^$|[A-Za-z0-9 .]+$",
+            "minLength": 0,
+            "maxLength": 75
+          },
+          "profileMedia": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/profileMedia"
+            }
+          },
+          "politics": {
+            "$ref": "#/components/schemas/politicalAffiliation"
+          },
+          "relationshipInterests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/relationshipInterest"
+            }
+          },
+          "religion": {
+            "$ref": "#/components/schemas/religion"
+          },
+          "verified": {
+            "description": "indicates whether or not the user's profile is verified",
+            "type": "boolean"
+          }
+        }
+      },
+      "userProfileWithUserId": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/userProfile",
+            "additionalProperties": true
+          },
+          {
+            "type": "object",
+            "required": [
+              "userId"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "userId": {
+                "type": "string",
+                "pattern": "^[\\w\\-\\|]+$"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

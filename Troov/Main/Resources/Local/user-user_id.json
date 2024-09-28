@@ -1,0 +1,75 @@
+{
+  "userId": "dustin_godevais_uid",
+  "firstName": "Dustin",
+  "lastName": "Godevais",
+  "active": true,
+  "email": "dgodevais@example.com",
+  "phoneNumber": "847-01983106",
+  "numCredits": 0,
+  "verifiedLogins": [
+    {
+      "verificationCode": "string",
+      "verificationId": "string",
+      "verifiedAt": "2023-03-25T23:26:00.816Z",
+      "lastLoggedInAt": "2023-03-25T23:26:00.816Z"
+    }
+  ],
+  "lastLoggedInAt": "2023-03-25T23:26:00.816Z",
+  "userProfile": {
+    "userId": "dustin_godevais_uid",
+    "firstName": "Dustin",
+    "gender": "MALE",
+    "height": {
+      "length": 73,
+      "unit": "IN"
+    },
+    "interestedIn": [
+      "FEMALE"
+    ],
+    "age": 18,
+    "educationHistory": [
+      "MASTERS"
+    ],
+    "almaMater": [
+      "Pomona College"
+    ],
+    "politics": "MODERATE",
+    "religion": "NOT_DISCLOSED",
+    "ethnicity": [
+      "WHITE"
+    ],
+    "occupation": "AI/Machine learning engineer",
+    "company": "Attentive Mobile",
+    "profileMedia": [
+      {
+        "mediaId": "1",
+        "mediaType": "IMAGE",
+        "mediaUrl": "dustin_godevais1",
+        "rank": 0,
+        "size": 0,
+        "createdAt": "2023-03-27T07:15:43.185Z"
+      },
+      {
+        "mediaId": "2",
+        "mediaType": "IMAGE",
+        "mediaUrl": "dustin_godevais2",
+        "rank": 1,
+        "size": 0,
+        "createdAt": "2023-03-27T07:15:43.185Z"
+      },
+      {
+        "mediaId": "3",
+        "mediaType": "IMAGE",
+        "mediaUrl": "dustin_godevais3",
+        "rank": 2,
+        "size": 0,
+        "createdAt": "2023-03-27T07:15:43.185Z"
+      }
+    ],
+    "numDatesCompleted": 0,
+    "numDatesFlaked": 0,
+    "bio": "I'm 6'1\" on the apps because I'm actually 6'\nSeeking hot nerd who will laugh at my dad jokes.\nBonus points if you speak a second language 🤓"
+  },
+  "blockedUsers": [
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "originHash" : "0d30a71bd12f3f3617175096fa4db0d89b8643842f25500e05a12e30dd4a2326",
+  "pins" : [
+    {
+      "identity" : "anycodable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Flight-School/AnyCodable",
+      "state" : {
+        "revision" : "862808b2070cd908cb04f9aafe7de83d35f81b05",
+        "version" : "0.6.7"
+      }
+    },
+    {
+      "identity" : "auth0.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/auth0/Auth0.swift",
+      "state" : {
+        "revision" : "024503207ea5e8b4a0edb38125723f4a1c386139",
+        "version" : "2.8.0"
+      }
+    },
+    {
+      "identity" : "dd-sdk-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Datadog/dd-sdk-ios.git",
+      "state" : {
+        "revision" : "c4cb52b90dbddde8e0ffc7d89f2b6e5680acce7e",
+        "version" : "2.16.0"
+      }
+    },
+    {
+      "identity" : "jwtdecode.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/auth0/JWTDecode.swift.git",
+      "state" : {
+        "revision" : "58af7278797871e460d79496621b3e5366b865b2",
+        "version" : "3.1.0"
+      }
+    },
+    {
+      "identity" : "lottie-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-ios.git",
+      "state" : {
+        "revision" : "fe4c6fe3a0aa66cdeb51d549623c82ca9704b9a5",
+        "version" : "4.5.0"
+      }
+    },
+    {
+      "identity" : "opentelemetry-swift-packages",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/DataDog/opentelemetry-swift-packages.git",
+      "state" : {
+        "revision" : "adcfc3d7fc6ad411bb576cfa4512c2d3f8b2dbc7",
+        "version" : "1.6.0"
+      }
+    },
+    {
+      "identity" : "plcrashreporter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/microsoft/plcrashreporter.git",
+      "state" : {
+        "revision" : "6752f71de206f6a53fa6a758c3660fd9a7fe7527",
+        "version" : "1.11.2"
+      }
+    },
+    {
+      "identity" : "simplekeychain",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/auth0/SimpleKeychain.git",
+      "state" : {
+        "revision" : "f082494aab8056139a4fe234c920a9f92f681aff",
+        "version" : "1.1.0"
+      }
+    }
+  ],
+  "version" : 3
+}

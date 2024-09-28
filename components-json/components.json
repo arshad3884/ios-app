@@ -1,0 +1,2705 @@
+{
+    "components": {
+      "schemas": {
+        "blockUserRequest": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "blockeDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "blockedUserId": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            },
+            "blockerUserId": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            },
+            "uid": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            }
+          }
+        },
+        "chat": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "latest": {
+              "type": "string"
+            },
+            "participants": {
+              "type": "array",
+              "items": {}
+            },
+            "uid": {
+              "type": "string"
+            }
+          }
+        },
+        "coordinates": {
+          "description": "the coordinates for a location",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "latitude": {
+              "type": "number",
+              "format": "double",
+              "minimum": -90,
+              "maximum": 90,
+              "default": 0
+            },
+            "longitude": {
+              "type": "number",
+              "format": "double",
+              "minimum": -180,
+              "maximum": 180,
+              "default": 0
+            }
+          }
+        },
+        "dayOfWeek": {
+          "type": "string",
+          "enum": [
+            "MONDAY",
+            "TUESDAY",
+            "WEDNESDAY",
+            "THURSDAY",
+            "FRIDAY",
+            "SATURDAY",
+            "SUNDAY"
+          ]
+        },
+        "filterSettings": {
+          "description": "all relevant attributes for filtering troovs",
+          "type": "object",
+          "required": [
+            "dateFilters",
+            "profileFilters"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "dateFilters": {
+              "description": "all filters relating to the details of the date",
+              "type": "object",
+              "properties": {
+                "currentLocation": {
+                  "type": "object",
+                  "properties": {
+                    "coordinates": {
+                      "description": "the coordinates for a location",
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "latitude": {
+                          "type": "number",
+                          "format": "double",
+                          "minimum": -90,
+                          "maximum": 90,
+                          "default": 0
+                        },
+                        "longitude": {
+                          "type": "number",
+                          "format": "double",
+                          "minimum": -180,
+                          "maximum": 180,
+                          "default": 0
+                        }
+                      }
+                    }
+                  }
+                },
+                "maximumDistance": {
+                  "type": "object",
+                  "properties": {
+                    "length": {
+                      "type": "integer",
+                      "default": 1,
+                      "minimum": 1,
+                      "maximum": 10000
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "MILE"
+                      ]
+                    }
+                  }
+                },
+                "daysOfWeek": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "MONDAY",
+                      "TUESDAY",
+                      "WEDNESDAY",
+                      "THURSDAY",
+                      "FRIDAY",
+                      "SATURDAY",
+                      "SUNDAY"
+                    ]
+                  }
+                },
+                "dateStartTimings": {
+                  "type": "array",
+                  "items": {
+                    "description": "* EARLY_MORNING: 3am – 8am * MORNING: 8am – 12pm * AFTERNOON: 12pm – 5pm * EVENING: 5pm – 8pm * NIGHT: 8pm – 3am\n",
+                    "type": "string",
+                    "enum": [
+                      "EARLY_MORNING",
+                      "MORNING",
+                      "AFTERNOON",
+                      "EVENING",
+                      "NIGHT"
+                    ]
+                  }
+                }
+              }
+            },
+            "profileFilters": {
+              "description": "properties on a User's Profile which are filterable",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "minAge": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": 18,
+                  "maximum": 100,
+                  "default": 18
+                },
+                "maxAge": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": 18,
+                  "maximum": 100,
+                  "default": 100
+                },
+                "educationHistory": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "GED",
+                      "UNDERGRADUATE",
+                      "ASSOCIATES",
+                      "MASTERS",
+                      "PHD",
+                      "NOT_DISCLOSED"
+                    ],
+                    "default": "NOT_DISCLOSED"
+                  }
+                },
+                "ethnicity": {
+                  "type": "array",
+                  "items": {
+                    "description": "* AMERICAN_INDIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * EAST_ASIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * BLACK - A person having origins in any of the black racial groups of Africa * HISPANIC - A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin * MIDDLE_EASTERN - For example Egypt * PACIFIC_ISLANDER - A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands. * SOUTH_ASIAN - For example India * WHITE - A person having origins in any of the original peoples of Europe, the Middle East, or North Africa * NOT_DISCLOSED\n",
+                    "type": "string",
+                    "enum": [
+                      "AMERICAN_INDIAN",
+                      "EAST_ASIAN",
+                      "BLACK",
+                      "HISPANIC",
+                      "MIDDLE_EASTERN",
+                      "PACIFIC_ISLANDER",
+                      "SOUTH_ASIAN",
+                      "WHITE",
+                      "NOT_DISCLOSED"
+                    ],
+                    "default": "NOT_DISCLOSED"
+                  }
+                },
+                "gender": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "MALE",
+                      "FEMALE",
+                      "NON-BINARY",
+                      "TRANS-MALE",
+                      "TRANS-FEMALE",
+                      "OTHER"
+                    ],
+                    "default": "OTHER"
+                  }
+                },
+                "minHeight": {
+                  "type": "object",
+                  "properties": {
+                    "length": {
+                      "type": "integer"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "IN",
+                        "CM"
+                      ],
+                      "default": "IN"
+                    }
+                  }
+                },
+                "maxHeight": {
+                  "type": "object",
+                  "properties": {
+                    "length": {
+                      "type": "integer"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "IN",
+                        "CM"
+                      ],
+                      "default": "IN"
+                    }
+                  }
+                },
+                "politics": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "LIBERAL",
+                      "MODERATE",
+                      "CONSERVATIVE",
+                      "APOLITICAL",
+                      "NOT_DISCLOSED"
+                    ],
+                    "default": "NOT_DISCLOSED"
+                  }
+                },
+                "religion": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "CHRISTIAN",
+                      "MUSLIM",
+                      "HINDU",
+                      "BUDDHIST",
+                      "AGNOSTIC",
+                      "ATHEIST",
+                      "JEWISH",
+                      "OTHER",
+                      "NOT_DISCLOSED"
+                    ],
+                    "default": "NOT_DISCLOSED"
+                  }
+                },
+                "verified": {
+                  "description": "indicates whether or not the user's profile is verified",
+                  "type": "boolean",
+                  "default": false
+                }
+              }
+            }
+          }
+        },
+        "location": {
+          "description": "information pertaining to a specific location",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "pattern": "^.+$"
+            },
+            "placeId": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            },
+            "coordinates": {
+              "description": "the coordinates for a location",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "latitude": {
+                  "type": "number",
+                  "format": "double",
+                  "minimum": -90,
+                  "maximum": 90,
+                  "default": 0
+                },
+                "longitude": {
+                  "type": "number",
+                  "format": "double",
+                  "minimum": -180,
+                  "maximum": 180,
+                  "default": 0
+                }
+              }
+            },
+            "geoHash": {
+              "type": "string"
+            }
+          }
+        },
+        "locationHidden": {
+          "description": "used to obscure the location of a troov (will add random noise to coordinates)",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hiddenRadius": {
+              "type": "object",
+              "properties": {
+                "length": {
+                  "type": "number",
+                  "format": "double"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "MILE"
+                  ]
+                }
+              }
+            },
+            "coordinates": {
+              "description": "the coordinates for a location",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "latitude": {
+                  "type": "number",
+                  "format": "double",
+                  "minimum": -90,
+                  "maximum": 90,
+                  "default": 0
+                },
+                "longitude": {
+                  "type": "number",
+                  "format": "double",
+                  "minimum": -180,
+                  "maximum": 180,
+                  "default": 0
+                }
+              }
+            }
+          }
+        },
+        "locationIndicator": {
+          "required": [
+            "hidden"
+          ],
+          "description": "Instead of using the composition anyOf because it creates additional complexity to support on the client side, we define a composition class which handles both the case where the location is provided and hidden. When location is hidden, then only the hiddenLocation field will be populated.\n",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hidden": {
+              "description": "indicates if the location is hidden from the consumer",
+              "type": "boolean",
+              "default": false
+            },
+            "hiddenLocation": {
+              "description": "used to obscure the location of a troov (will add random noise to coordinates)",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "hiddenRadius": {
+                  "type": "object",
+                  "properties": {
+                    "length": {
+                      "type": "number",
+                      "format": "double"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "MILE"
+                      ]
+                    }
+                  }
+                },
+                "coordinates": {
+                  "description": "the coordinates for a location",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "latitude": {
+                      "type": "number",
+                      "format": "double",
+                      "minimum": -90,
+                      "maximum": 90,
+                      "default": 0
+                    },
+                    "longitude": {
+                      "type": "number",
+                      "format": "double",
+                      "minimum": -180,
+                      "maximum": 180,
+                      "default": 0
+                    }
+                  }
+                }
+              }
+            },
+            "location": {
+              "description": "information pertaining to a specific location",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "pattern": "^.+$"
+                },
+                "placeId": {
+                  "type": "string",
+                  "pattern": "^[\\w\\-\\|]+$"
+                },
+                "coordinates": {
+                  "description": "the coordinates for a location",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "latitude": {
+                      "type": "number",
+                      "format": "double",
+                      "minimum": -90,
+                      "maximum": 90,
+                      "default": 0
+                    },
+                    "longitude": {
+                      "type": "number",
+                      "format": "double",
+                      "minimum": -180,
+                      "maximum": 180,
+                      "default": 0
+                    }
+                  }
+                },
+                "geoHash": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "message": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "createdat": {
+              "type": "object"
+            },
+            "createdby": {
+              "type": "string"
+            },
+            "messagebody": {
+              "type": "string"
+            },
+            "multimediamessageurl": {
+              "type": "string"
+            },
+            "uid": {
+              "type": "string"
+            }
+          }
+        },
+        "profileFilterAttributes": {
+          "description": "properties on a User's Profile which are filterable",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "minAge": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 18,
+              "maximum": 100,
+              "default": 18
+            },
+            "maxAge": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 18,
+              "maximum": 100,
+              "default": 100
+            },
+            "educationHistory": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "GED",
+                  "UNDERGRADUATE",
+                  "ASSOCIATES",
+                  "MASTERS",
+                  "PHD",
+                  "NOT_DISCLOSED"
+                ],
+                "default": "NOT_DISCLOSED"
+              }
+            },
+            "ethnicity": {
+              "type": "array",
+              "items": {
+                "description": "* AMERICAN_INDIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * EAST_ASIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * BLACK - A person having origins in any of the black racial groups of Africa * HISPANIC - A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin * MIDDLE_EASTERN - For example Egypt * PACIFIC_ISLANDER - A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands. * SOUTH_ASIAN - For example India * WHITE - A person having origins in any of the original peoples of Europe, the Middle East, or North Africa * NOT_DISCLOSED\n",
+                "type": "string",
+                "enum": [
+                  "AMERICAN_INDIAN",
+                  "EAST_ASIAN",
+                  "BLACK",
+                  "HISPANIC",
+                  "MIDDLE_EASTERN",
+                  "PACIFIC_ISLANDER",
+                  "SOUTH_ASIAN",
+                  "WHITE",
+                  "NOT_DISCLOSED"
+                ],
+                "default": "NOT_DISCLOSED"
+              }
+            },
+            "gender": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "MALE",
+                  "FEMALE",
+                  "NON-BINARY",
+                  "TRANS-MALE",
+                  "TRANS-FEMALE",
+                  "OTHER"
+                ],
+                "default": "OTHER"
+              }
+            },
+            "minHeight": {
+              "type": "object",
+              "properties": {
+                "length": {
+                  "type": "integer"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "IN",
+                    "CM"
+                  ],
+                  "default": "IN"
+                }
+              }
+            },
+            "maxHeight": {
+              "type": "object",
+              "properties": {
+                "length": {
+                  "type": "integer"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "IN",
+                    "CM"
+                  ],
+                  "default": "IN"
+                }
+              }
+            },
+            "politics": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "LIBERAL",
+                  "MODERATE",
+                  "CONSERVATIVE",
+                  "APOLITICAL",
+                  "NOT_DISCLOSED"
+                ],
+                "default": "NOT_DISCLOSED"
+              }
+            },
+            "religion": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "CHRISTIAN",
+                  "MUSLIM",
+                  "HINDU",
+                  "BUDDHIST",
+                  "AGNOSTIC",
+                  "ATHEIST",
+                  "JEWISH",
+                  "OTHER",
+                  "NOT_DISCLOSED"
+                ],
+                "default": "NOT_DISCLOSED"
+              }
+            },
+            "verified": {
+              "description": "indicates whether or not the user's profile is verified",
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "profileMedia": {
+          "description": "represents any form of media associated with a profile",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mediaId": {
+              "type": "string"
+            },
+            "mediaType": {
+              "type": "string",
+              "enum": [
+                "IMAGE",
+                "VIDEO",
+                "AUDIO"
+              ]
+            },
+            "mediaUrl": {
+              "description": "the location of the media",
+              "type": "string"
+            },
+            "rank": {
+              "description": "The relative ordering of the profile media",
+              "type": "integer"
+            },
+            "size": {
+              "description": "size of the file in bytes",
+              "type": "number"
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "TimeOfDay": {
+          "description": "* EARLY_MORNING: 3am – 8am * MORNING: 8am – 12pm * AFTERNOON: 12pm – 5pm * EVENING: 5pm – 8pm * NIGHT: 8pm – 3am\n",
+          "type": "string",
+          "enum": [
+            "EARLY_MORNING",
+            "MORNING",
+            "AFTERNOON",
+            "EVENING",
+            "NIGHT"
+          ]
+        },
+        "troov": {
+          "description": "The primary date object Input fields (POST? vs. GET?)",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "createdBy"
+          ],
+          "properties": {
+            "troovId": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            },
+            "createdBy": {
+              "description": "all properties related to the user's public profile with user id",
+              "type": "object",
+              "required": [
+                "userId"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "pattern": "^[\\w\\-\\|]+$"
+                },
+                "age": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": 18,
+                  "maximum": 100,
+                  "default": 18
+                },
+                "almaMater": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "bio": {
+                  "type": "string",
+                  "pattern": "(\\u00a9|\\u00ae|[\\u2000-\\u3300]|\\ud83c[\\ud000-\\udfff]|\\ud83d[\\ud000-\\udfff]|\\ud83e[\\ud000-\\udfff]|\\w|\\s|\\d|[\\\\?\\\\!\\\\.\\\\$\\\\,\\\\%\\\\&\\\\\"])",
+                  "minLength": 1,
+                  "maxLength": 300
+                },
+                "company": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9]+$",
+                  "minLength": 1,
+                  "maxLength": 75
+                },
+                "education": {
+                  "type": "string",
+                  "enum": [
+                    "GED",
+                    "UNDERGRADUATE",
+                    "ASSOCIATES",
+                    "MASTERS",
+                    "PHD",
+                    "NOT_DISCLOSED"
+                  ],
+                  "default": "NOT_DISCLOSED"
+                },
+                "ethnicity": {
+                  "type": "array",
+                  "items": {
+                    "description": "* AMERICAN_INDIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * EAST_ASIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * BLACK - A person having origins in any of the black racial groups of Africa * HISPANIC - A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin * MIDDLE_EASTERN - For example Egypt * PACIFIC_ISLANDER - A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands. * SOUTH_ASIAN - For example India * WHITE - A person having origins in any of the original peoples of Europe, the Middle East, or North Africa * NOT_DISCLOSED\n",
+                    "type": "string",
+                    "enum": [
+                      "AMERICAN_INDIAN",
+                      "EAST_ASIAN",
+                      "BLACK",
+                      "HISPANIC",
+                      "MIDDLE_EASTERN",
+                      "PACIFIC_ISLANDER",
+                      "SOUTH_ASIAN",
+                      "WHITE",
+                      "NOT_DISCLOSED"
+                    ],
+                    "default": "NOT_DISCLOSED"
+                  }
+                },
+                "firstName": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z]+$",
+                  "minLength": 1,
+                  "maxLength": 75
+                },
+                "gender": {
+                  "type": "string",
+                  "enum": [
+                    "MALE",
+                    "FEMALE",
+                    "NON-BINARY",
+                    "TRANS-MALE",
+                    "TRANS-FEMALE",
+                    "OTHER"
+                  ],
+                  "default": "OTHER"
+                },
+                "height": {
+                  "type": "object",
+                  "properties": {
+                    "length": {
+                      "type": "integer"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "IN",
+                        "CM"
+                      ],
+                      "default": "IN"
+                    }
+                  }
+                },
+                "interestedIn": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "MALE",
+                      "FEMALE",
+                      "NON-BINARY",
+                      "TRANS-MALE",
+                      "TRANS-FEMALE",
+                      "OTHER"
+                    ],
+                    "default": "OTHER"
+                  }
+                },
+                "numDatesCompleted": {
+                  "type": "integer",
+                  "format": "int64",
+                  "default": 0
+                },
+                "numDatesFlaked": {
+                  "type": "integer",
+                  "format": "int64",
+                  "default": 0
+                },
+                "occupation": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z]+$",
+                  "minLength": 1,
+                  "maxLength": 75
+                },
+                "photoImageUrls": {
+                  "type": "array",
+                  "items": {
+                    "description": "represents any form of media associated with a profile",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "mediaId": {
+                        "type": "string"
+                      },
+                      "mediaType": {
+                        "type": "string",
+                        "enum": [
+                          "IMAGE",
+                          "VIDEO",
+                          "AUDIO"
+                        ]
+                      },
+                      "mediaUrl": {
+                        "description": "the location of the media",
+                        "type": "string"
+                      },
+                      "rank": {
+                        "description": "The relative ordering of the profile media",
+                        "type": "integer"
+                      },
+                      "size": {
+                        "description": "size of the file in bytes",
+                        "type": "number"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                },
+                "politics": {
+                  "type": "string",
+                  "enum": [
+                    "LIBERAL",
+                    "MODERATE",
+                    "CONSERVATIVE",
+                    "APOLITICAL",
+                    "NOT_DISCLOSED"
+                  ],
+                  "default": "NOT_DISCLOSED"
+                },
+                "relationshipInterests": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "FRIENDSHIP",
+                      "DATING_SHORT_TERM",
+                      "DATING_LONG_TERM"
+                    ]
+                  },
+                  "default": [
+                    "FRIENDSHIP",
+                    "DATING_SHORT_TERM",
+                    "DATING_LONG_TERM"
+                  ]
+                },
+                "religion": {
+                  "type": "string",
+                  "enum": [
+                    "CHRISTIAN",
+                    "MUSLIM",
+                    "HINDU",
+                    "BUDDHIST",
+                    "AGNOSTIC",
+                    "ATHEIST",
+                    "JEWISH",
+                    "OTHER",
+                    "NOT_DISCLOSED"
+                  ],
+                  "default": "NOT_DISCLOSED"
+                },
+                "verified": {
+                  "description": "indicates whether or not the user's profile is verified",
+                  "type": "boolean",
+                  "default": false
+                }
+              }
+            },
+            "status": {
+              "description": "Status of the match request:\n * CONFIRMED                 | The creator of the troov has approved the match request\n * PENDING                   | The troov creator has not confirmed with any other user\n * CANCELLED_BY_CREATOR      | The troov creator cancelled this troov\n * CANCELLED_BY_REQUESTER    | The requester cancelled this troov\n * COMPLETED                 | The troov creator went on a date with a confirmed user\n * NO_SHOW_BY_CREATOR        | The troov creator did not show up to the date\n * NO_SHOW_BY_REQUESTER      | The requester did not show up to the date\n",
+              "type": "string",
+              "enum": [
+                "CONFIRMED",
+                "PENDING",
+                "CANCELLED_BY_CREATOR",
+                "CANCELLED_BY_REQUESTER",
+                "COMPLETED",
+                "NO_SHOW_BY_CREATOR",
+                "NO_SHOW_BY_REQUESTER"
+              ]
+            },
+            "locationDetails": {
+              "required": [
+                "hidden"
+              ],
+              "description": "Instead of using the composition anyOf because it creates additional complexity to support on the client side, we define a composition class which handles both the case where the location is provided and hidden. When location is hidden, then only the hiddenLocation field will be populated.\n",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "hidden": {
+                  "description": "indicates if the location is hidden from the consumer",
+                  "type": "boolean",
+                  "default": false
+                },
+                "hiddenLocation": {
+                  "description": "used to obscure the location of a troov (will add random noise to coordinates)",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "hiddenRadius": {
+                      "type": "object",
+                      "properties": {
+                        "length": {
+                          "type": "number",
+                          "format": "double"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "MILE"
+                          ]
+                        }
+                      }
+                    },
+                    "coordinates": {
+                      "description": "the coordinates for a location",
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "latitude": {
+                          "type": "number",
+                          "format": "double",
+                          "minimum": -90,
+                          "maximum": 90,
+                          "default": 0
+                        },
+                        "longitude": {
+                          "type": "number",
+                          "format": "double",
+                          "minimum": -180,
+                          "maximum": 180,
+                          "default": 0
+                        }
+                      }
+                    }
+                  }
+                },
+                "location": {
+                  "description": "information pertaining to a specific location",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "pattern": "^.+$"
+                    },
+                    "placeId": {
+                      "type": "string",
+                      "pattern": "^[\\w\\-\\|]+$"
+                    },
+                    "coordinates": {
+                      "description": "the coordinates for a location",
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "latitude": {
+                          "type": "number",
+                          "format": "double",
+                          "minimum": -90,
+                          "maximum": 90,
+                          "default": 0
+                        },
+                        "longitude": {
+                          "type": "number",
+                          "format": "double",
+                          "minimum": -180,
+                          "maximum": 180,
+                          "default": 0
+                        }
+                      }
+                    },
+                    "geoHash": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "troovCoreDetails": {
+              "description": "Contains the details were are essential to a Troov",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "title": {
+                  "description": "title for the date which appears in all the date preview tiles",
+                  "type": "string",
+                  "pattern": "^.+$",
+                  "minLength": 5,
+                  "maxLength": 75
+                },
+                "details": {
+                  "description": "any additional descriptions that the user would like to add to the date",
+                  "type": "string",
+                  "pattern": "^.+$",
+                  "minLength": 5,
+                  "maxLength": 250
+                },
+                "startTime": {
+                  "description": "the date's start time",
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "expenseRating": {
+                  "type": "string",
+                  "description": "Cost of the date:\n * FREE  | no cost\n * $     | < $20\n * $$    | $20 - $40\n * $$$   | $40 - $100\n * $$$$  | > $100\n",
+                  "enum": [
+                    "FREE",
+                    "$",
+                    "$$",
+                    "$$$",
+                    "$$$$"
+                  ],
+                  "default": "FREE"
+                },
+                "tags": {
+                  "description": "users will assign free form text tags to each date to improve searchability",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 20
+                  },
+                  "example": [
+                    "coffe",
+                    "talking"
+                  ]
+                }
+              }
+            },
+            "matchRequests": {
+              "description": "a list of all the match requests",
+              "type": "array",
+              "items": {
+                "description": "A single instance of a match request initiated by a user wanting to go on a date.",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "status": {
+                    "description": "Status of the match request:\n * CONFIRMED   | The creator of the troov has approved the request\n * DECLINED    | The creator of the troov has declined this request\n * PENDING     | The requester is still pending a reply from the troov creator\n * CANCELLED   | The requester has cancelled this troov request\n",
+                    "type": "string",
+                    "enum": [
+                      "CONFIRMED",
+                      "DECLINED",
+                      "PENDING",
+                      "CANCELLED"
+                    ],
+                    "default": "PENDING"
+                  },
+                  "requester": {
+                    "description": "all properties related to the user's public profile with user id",
+                    "type": "object",
+                    "required": [
+                      "userId"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "userId": {
+                        "type": "string",
+                        "pattern": "^[\\w\\-\\|]+$"
+                      },
+                      "age": {
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 18,
+                        "maximum": 100,
+                        "default": 18
+                      },
+                      "almaMater": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "bio": {
+                        "type": "string",
+                        "pattern": "(\\u00a9|\\u00ae|[\\u2000-\\u3300]|\\ud83c[\\ud000-\\udfff]|\\ud83d[\\ud000-\\udfff]|\\ud83e[\\ud000-\\udfff]|\\w|\\s|\\d|[\\\\?\\\\!\\\\.\\\\$\\\\,\\\\%\\\\&\\\\\"])",
+                        "minLength": 1,
+                        "maxLength": 300
+                      },
+                      "company": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9]+$",
+                        "minLength": 1,
+                        "maxLength": 75
+                      },
+                      "education": {
+                        "type": "string",
+                        "enum": [
+                          "GED",
+                          "UNDERGRADUATE",
+                          "ASSOCIATES",
+                          "MASTERS",
+                          "PHD",
+                          "NOT_DISCLOSED"
+                        ],
+                        "default": "NOT_DISCLOSED"
+                      },
+                      "ethnicity": {
+                        "type": "array",
+                        "items": {
+                          "description": "* AMERICAN_INDIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * EAST_ASIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * BLACK - A person having origins in any of the black racial groups of Africa * HISPANIC - A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin * MIDDLE_EASTERN - For example Egypt * PACIFIC_ISLANDER - A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands. * SOUTH_ASIAN - For example India * WHITE - A person having origins in any of the original peoples of Europe, the Middle East, or North Africa * NOT_DISCLOSED\n",
+                          "type": "string",
+                          "enum": [
+                            "AMERICAN_INDIAN",
+                            "EAST_ASIAN",
+                            "BLACK",
+                            "HISPANIC",
+                            "MIDDLE_EASTERN",
+                            "PACIFIC_ISLANDER",
+                            "SOUTH_ASIAN",
+                            "WHITE",
+                            "NOT_DISCLOSED"
+                          ],
+                          "default": "NOT_DISCLOSED"
+                        }
+                      },
+                      "firstName": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z]+$",
+                        "minLength": 1,
+                        "maxLength": 75
+                      },
+                      "gender": {
+                        "type": "string",
+                        "enum": [
+                          "MALE",
+                          "FEMALE",
+                          "NON-BINARY",
+                          "TRANS-MALE",
+                          "TRANS-FEMALE",
+                          "OTHER"
+                        ],
+                        "default": "OTHER"
+                      },
+                      "height": {
+                        "type": "object",
+                        "properties": {
+                          "length": {
+                            "type": "integer"
+                          },
+                          "unit": {
+                            "type": "string",
+                            "enum": [
+                              "IN",
+                              "CM"
+                            ],
+                            "default": "IN"
+                          }
+                        }
+                      },
+                      "interestedIn": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "MALE",
+                            "FEMALE",
+                            "NON-BINARY",
+                            "TRANS-MALE",
+                            "TRANS-FEMALE",
+                            "OTHER"
+                          ],
+                          "default": "OTHER"
+                        }
+                      },
+                      "numDatesCompleted": {
+                        "type": "integer",
+                        "format": "int64",
+                        "default": 0
+                      },
+                      "numDatesFlaked": {
+                        "type": "integer",
+                        "format": "int64",
+                        "default": 0
+                      },
+                      "occupation": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z]+$",
+                        "minLength": 1,
+                        "maxLength": 75
+                      },
+                      "photoImageUrls": {
+                        "type": "array",
+                        "items": {
+                          "description": "represents any form of media associated with a profile",
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "mediaId": {
+                              "type": "string"
+                            },
+                            "mediaType": {
+                              "type": "string",
+                              "enum": [
+                                "IMAGE",
+                                "VIDEO",
+                                "AUDIO"
+                              ]
+                            },
+                            "mediaUrl": {
+                              "description": "the location of the media",
+                              "type": "string"
+                            },
+                            "rank": {
+                              "description": "The relative ordering of the profile media",
+                              "type": "integer"
+                            },
+                            "size": {
+                              "description": "size of the file in bytes",
+                              "type": "number"
+                            },
+                            "createdAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          }
+                        }
+                      },
+                      "politics": {
+                        "type": "string",
+                        "enum": [
+                          "LIBERAL",
+                          "MODERATE",
+                          "CONSERVATIVE",
+                          "APOLITICAL",
+                          "NOT_DISCLOSED"
+                        ],
+                        "default": "NOT_DISCLOSED"
+                      },
+                      "relationshipInterests": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "FRIENDSHIP",
+                            "DATING_SHORT_TERM",
+                            "DATING_LONG_TERM"
+                          ]
+                        },
+                        "default": [
+                          "FRIENDSHIP",
+                          "DATING_SHORT_TERM",
+                          "DATING_LONG_TERM"
+                        ]
+                      },
+                      "religion": {
+                        "type": "string",
+                        "enum": [
+                          "CHRISTIAN",
+                          "MUSLIM",
+                          "HINDU",
+                          "BUDDHIST",
+                          "AGNOSTIC",
+                          "ATHEIST",
+                          "JEWISH",
+                          "OTHER",
+                          "NOT_DISCLOSED"
+                        ],
+                        "default": "NOT_DISCLOSED"
+                      },
+                      "verified": {
+                        "description": "indicates whether or not the user's profile is verified",
+                        "type": "boolean",
+                        "default": false
+                      }
+                    }
+                  },
+                  "requestedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "statusUpdatedAt": {
+                    "description": "the last time at which the status was updated",
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "lastStatus": {
+                    "description": "the prior status",
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "troovId": {
+                    "description": "the troov to which this request belongs",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "confirmedMatchRequest": {
+              "description": "A single instance of a match request initiated by a user wanting to go on a date.",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "status": {
+                  "description": "Status of the match request:\n * CONFIRMED   | The creator of the troov has approved the request\n * DECLINED    | The creator of the troov has declined this request\n * PENDING     | The requester is still pending a reply from the troov creator\n * CANCELLED   | The requester has cancelled this troov request\n",
+                  "type": "string",
+                  "enum": [
+                    "CONFIRMED",
+                    "DECLINED",
+                    "PENDING",
+                    "CANCELLED"
+                  ],
+                  "default": "PENDING"
+                },
+                "requester": {
+                  "description": "all properties related to the user's public profile with user id",
+                  "type": "object",
+                  "required": [
+                    "userId"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "userId": {
+                      "type": "string",
+                      "pattern": "^[\\w\\-\\|]+$"
+                    },
+                    "age": {
+                      "type": "integer",
+                      "format": "int64",
+                      "minimum": 18,
+                      "maximum": 100,
+                      "default": 18
+                    },
+                    "almaMater": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "bio": {
+                      "type": "string",
+                      "pattern": "(\\u00a9|\\u00ae|[\\u2000-\\u3300]|\\ud83c[\\ud000-\\udfff]|\\ud83d[\\ud000-\\udfff]|\\ud83e[\\ud000-\\udfff]|\\w|\\s|\\d|[\\\\?\\\\!\\\\.\\\\$\\\\,\\\\%\\\\&\\\\\"])",
+                      "minLength": 1,
+                      "maxLength": 300
+                    },
+                    "company": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9]+$",
+                      "minLength": 1,
+                      "maxLength": 75
+                    },
+                    "education": {
+                      "type": "string",
+                      "enum": [
+                        "GED",
+                        "UNDERGRADUATE",
+                        "ASSOCIATES",
+                        "MASTERS",
+                        "PHD",
+                        "NOT_DISCLOSED"
+                      ],
+                      "default": "NOT_DISCLOSED"
+                    },
+                    "ethnicity": {
+                      "type": "array",
+                      "items": {
+                        "description": "* AMERICAN_INDIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * EAST_ASIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * BLACK - A person having origins in any of the black racial groups of Africa * HISPANIC - A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin * MIDDLE_EASTERN - For example Egypt * PACIFIC_ISLANDER - A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands. * SOUTH_ASIAN - For example India * WHITE - A person having origins in any of the original peoples of Europe, the Middle East, or North Africa * NOT_DISCLOSED\n",
+                        "type": "string",
+                        "enum": [
+                          "AMERICAN_INDIAN",
+                          "EAST_ASIAN",
+                          "BLACK",
+                          "HISPANIC",
+                          "MIDDLE_EASTERN",
+                          "PACIFIC_ISLANDER",
+                          "SOUTH_ASIAN",
+                          "WHITE",
+                          "NOT_DISCLOSED"
+                        ],
+                        "default": "NOT_DISCLOSED"
+                      }
+                    },
+                    "firstName": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z]+$",
+                      "minLength": 1,
+                      "maxLength": 75
+                    },
+                    "gender": {
+                      "type": "string",
+                      "enum": [
+                        "MALE",
+                        "FEMALE",
+                        "NON-BINARY",
+                        "TRANS-MALE",
+                        "TRANS-FEMALE",
+                        "OTHER"
+                      ],
+                      "default": "OTHER"
+                    },
+                    "height": {
+                      "type": "object",
+                      "properties": {
+                        "length": {
+                          "type": "integer"
+                        },
+                        "unit": {
+                          "type": "string",
+                          "enum": [
+                            "IN",
+                            "CM"
+                          ],
+                          "default": "IN"
+                        }
+                      }
+                    },
+                    "interestedIn": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "MALE",
+                          "FEMALE",
+                          "NON-BINARY",
+                          "TRANS-MALE",
+                          "TRANS-FEMALE",
+                          "OTHER"
+                        ],
+                        "default": "OTHER"
+                      }
+                    },
+                    "numDatesCompleted": {
+                      "type": "integer",
+                      "format": "int64",
+                      "default": 0
+                    },
+                    "numDatesFlaked": {
+                      "type": "integer",
+                      "format": "int64",
+                      "default": 0
+                    },
+                    "occupation": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z]+$",
+                      "minLength": 1,
+                      "maxLength": 75
+                    },
+                    "photoImageUrls": {
+                      "type": "array",
+                      "items": {
+                        "description": "represents any form of media associated with a profile",
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "mediaId": {
+                            "type": "string"
+                          },
+                          "mediaType": {
+                            "type": "string",
+                            "enum": [
+                              "IMAGE",
+                              "VIDEO",
+                              "AUDIO"
+                            ]
+                          },
+                          "mediaUrl": {
+                            "description": "the location of the media",
+                            "type": "string"
+                          },
+                          "rank": {
+                            "description": "The relative ordering of the profile media",
+                            "type": "integer"
+                          },
+                          "size": {
+                            "description": "size of the file in bytes",
+                            "type": "number"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    },
+                    "politics": {
+                      "type": "string",
+                      "enum": [
+                        "LIBERAL",
+                        "MODERATE",
+                        "CONSERVATIVE",
+                        "APOLITICAL",
+                        "NOT_DISCLOSED"
+                      ],
+                      "default": "NOT_DISCLOSED"
+                    },
+                    "relationshipInterests": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "FRIENDSHIP",
+                          "DATING_SHORT_TERM",
+                          "DATING_LONG_TERM"
+                        ]
+                      },
+                      "default": [
+                        "FRIENDSHIP",
+                        "DATING_SHORT_TERM",
+                        "DATING_LONG_TERM"
+                      ]
+                    },
+                    "religion": {
+                      "type": "string",
+                      "enum": [
+                        "CHRISTIAN",
+                        "MUSLIM",
+                        "HINDU",
+                        "BUDDHIST",
+                        "AGNOSTIC",
+                        "ATHEIST",
+                        "JEWISH",
+                        "OTHER",
+                        "NOT_DISCLOSED"
+                      ],
+                      "default": "NOT_DISCLOSED"
+                    },
+                    "verified": {
+                      "description": "indicates whether or not the user's profile is verified",
+                      "type": "boolean",
+                      "default": false
+                    }
+                  }
+                },
+                "requestedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "statusUpdatedAt": {
+                  "description": "the last time at which the status was updated",
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "lastStatus": {
+                  "description": "the prior status",
+                  "type": "string",
+                  "nullable": true
+                },
+                "troovId": {
+                  "description": "the troov to which this request belongs",
+                  "type": "string"
+                }
+              }
+            },
+            "indexedFields": {
+              "description": "helper query lookup fields (related to Firestore implementation)",
+              "type": "object",
+              "properties": {
+                "matchRequestUserIds": {
+                  "description": "a list of all the user ids which have requested a match for this troov",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[\\w\\-\\|]+$"
+                  }
+                },
+                "confirmedUserIds": {
+                  "description": "the users ids of the creator and confirmed matcher",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[\\w\\-\\|]+$"
+                  }
+                }
+              }
+            },
+            "createdAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastUpdatedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "troovCoreDetails": {
+          "description": "Contains the details were are essential to a Troov",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": {
+              "description": "title for the date which appears in all the date preview tiles",
+              "type": "string",
+              "pattern": "^.+$",
+              "minLength": 5,
+              "maxLength": 75
+            },
+            "details": {
+              "description": "any additional descriptions that the user would like to add to the date",
+              "type": "string",
+              "pattern": "^.+$",
+              "minLength": 5,
+              "maxLength": 250
+            },
+            "startTime": {
+              "description": "the date's start time",
+              "type": "string",
+              "format": "date-time"
+            },
+            "expenseRating": {
+              "type": "string",
+              "description": "Cost of the date:\n * FREE  | no cost\n * $     | < $20\n * $$    | $20 - $40\n * $$$   | $40 - $100\n * $$$$  | > $100\n",
+              "enum": [
+                "FREE",
+                "$",
+                "$$",
+                "$$$",
+                "$$$$"
+              ],
+              "default": "FREE"
+            },
+            "tags": {
+              "description": "users will assign free form text tags to each date to improve searchability",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 20
+              },
+              "example": [
+                "coffe",
+                "talking"
+              ]
+            }
+          }
+        },
+        "troovMatchRequest": {
+          "description": "A single instance of a match request initiated by a user wanting to go on a date.",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "description": "Status of the match request:\n * CONFIRMED   | The creator of the troov has approved the request\n * DECLINED    | The creator of the troov has declined this request\n * PENDING     | The requester is still pending a reply from the troov creator\n * CANCELLED   | The requester has cancelled this troov request\n",
+              "type": "string",
+              "enum": [
+                "CONFIRMED",
+                "DECLINED",
+                "PENDING",
+                "CANCELLED"
+              ],
+              "default": "PENDING"
+            },
+            "requester": {
+              "description": "all properties related to the user's public profile with user id",
+              "type": "object",
+              "required": [
+                "userId"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "userId": {
+                  "type": "string",
+                  "pattern": "^[\\w\\-\\|]+$"
+                },
+                "age": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": 18,
+                  "maximum": 100,
+                  "default": 18
+                },
+                "almaMater": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "bio": {
+                  "type": "string",
+                  "pattern": "(\\u00a9|\\u00ae|[\\u2000-\\u3300]|\\ud83c[\\ud000-\\udfff]|\\ud83d[\\ud000-\\udfff]|\\ud83e[\\ud000-\\udfff]|\\w|\\s|\\d|[\\\\?\\\\!\\\\.\\\\$\\\\,\\\\%\\\\&\\\\\"])",
+                  "minLength": 1,
+                  "maxLength": 300
+                },
+                "company": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9]+$",
+                  "minLength": 1,
+                  "maxLength": 75
+                },
+                "education": {
+                  "type": "string",
+                  "enum": [
+                    "GED",
+                    "UNDERGRADUATE",
+                    "ASSOCIATES",
+                    "MASTERS",
+                    "PHD",
+                    "NOT_DISCLOSED"
+                  ],
+                  "default": "NOT_DISCLOSED"
+                },
+                "ethnicity": {
+                  "type": "array",
+                  "items": {
+                    "description": "* AMERICAN_INDIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * EAST_ASIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * BLACK - A person having origins in any of the black racial groups of Africa * HISPANIC - A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin * MIDDLE_EASTERN - For example Egypt * PACIFIC_ISLANDER - A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands. * SOUTH_ASIAN - For example India * WHITE - A person having origins in any of the original peoples of Europe, the Middle East, or North Africa * NOT_DISCLOSED\n",
+                    "type": "string",
+                    "enum": [
+                      "AMERICAN_INDIAN",
+                      "EAST_ASIAN",
+                      "BLACK",
+                      "HISPANIC",
+                      "MIDDLE_EASTERN",
+                      "PACIFIC_ISLANDER",
+                      "SOUTH_ASIAN",
+                      "WHITE",
+                      "NOT_DISCLOSED"
+                    ],
+                    "default": "NOT_DISCLOSED"
+                  }
+                },
+                "firstName": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z]+$",
+                  "minLength": 1,
+                  "maxLength": 75
+                },
+                "gender": {
+                  "type": "string",
+                  "enum": [
+                    "MALE",
+                    "FEMALE",
+                    "NON-BINARY",
+                    "TRANS-MALE",
+                    "TRANS-FEMALE",
+                    "OTHER"
+                  ],
+                  "default": "OTHER"
+                },
+                "height": {
+                  "type": "object",
+                  "properties": {
+                    "length": {
+                      "type": "integer"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "IN",
+                        "CM"
+                      ],
+                      "default": "IN"
+                    }
+                  }
+                },
+                "interestedIn": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "MALE",
+                      "FEMALE",
+                      "NON-BINARY",
+                      "TRANS-MALE",
+                      "TRANS-FEMALE",
+                      "OTHER"
+                    ],
+                    "default": "OTHER"
+                  }
+                },
+                "numDatesCompleted": {
+                  "type": "integer",
+                  "format": "int64",
+                  "default": 0
+                },
+                "numDatesFlaked": {
+                  "type": "integer",
+                  "format": "int64",
+                  "default": 0
+                },
+                "occupation": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z]+$",
+                  "minLength": 1,
+                  "maxLength": 75
+                },
+                "photoImageUrls": {
+                  "type": "array",
+                  "items": {
+                    "description": "represents any form of media associated with a profile",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "mediaId": {
+                        "type": "string"
+                      },
+                      "mediaType": {
+                        "type": "string",
+                        "enum": [
+                          "IMAGE",
+                          "VIDEO",
+                          "AUDIO"
+                        ]
+                      },
+                      "mediaUrl": {
+                        "description": "the location of the media",
+                        "type": "string"
+                      },
+                      "rank": {
+                        "description": "The relative ordering of the profile media",
+                        "type": "integer"
+                      },
+                      "size": {
+                        "description": "size of the file in bytes",
+                        "type": "number"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                },
+                "politics": {
+                  "type": "string",
+                  "enum": [
+                    "LIBERAL",
+                    "MODERATE",
+                    "CONSERVATIVE",
+                    "APOLITICAL",
+                    "NOT_DISCLOSED"
+                  ],
+                  "default": "NOT_DISCLOSED"
+                },
+                "relationshipInterests": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "FRIENDSHIP",
+                      "DATING_SHORT_TERM",
+                      "DATING_LONG_TERM"
+                    ]
+                  },
+                  "default": [
+                    "FRIENDSHIP",
+                    "DATING_SHORT_TERM",
+                    "DATING_LONG_TERM"
+                  ]
+                },
+                "religion": {
+                  "type": "string",
+                  "enum": [
+                    "CHRISTIAN",
+                    "MUSLIM",
+                    "HINDU",
+                    "BUDDHIST",
+                    "AGNOSTIC",
+                    "ATHEIST",
+                    "JEWISH",
+                    "OTHER",
+                    "NOT_DISCLOSED"
+                  ],
+                  "default": "NOT_DISCLOSED"
+                },
+                "verified": {
+                  "description": "indicates whether or not the user's profile is verified",
+                  "type": "boolean",
+                  "default": false
+                }
+              }
+            },
+            "requestedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "statusUpdatedAt": {
+              "description": "the last time at which the status was updated",
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastStatus": {
+              "description": "the prior status",
+              "type": "string",
+              "nullable": true
+            },
+            "troovId": {
+              "description": "the troov to which this request belongs",
+              "type": "string"
+            }
+          }
+        },
+        "user": {
+          "description": "All data related to a User in the application",
+          "type": "object",
+          "required": [
+            "userId"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "userId": {
+              "description": "represents a unique identifier for all users in the application",
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$",
+              "minLength": 25,
+              "maxLength": 75
+            },
+            "firstName": {
+              "type": "string",
+              "pattern": "^[A-Za-z ,.'-]+$",
+              "minLength": 1,
+              "maxLength": 75
+            },
+            "lastName": {
+              "type": "string",
+              "pattern": "^[A-Za-z ,.'-]+$",
+              "minLength": 1,
+              "maxLength": 75
+            },
+            "active": {
+              "description": "indicates if the user's account is active",
+              "type": "boolean"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "phoneNumber": {
+              "type": "string",
+              "pattern": "^\\+?[0-9]{3}-?[0-9]{6,12}$"
+            },
+            "numCredits": {
+              "description": "users can use app credits for access to enhanced features",
+              "type": "integer",
+              "format": "int64"
+            },
+            "verifiedLogins": {
+              "description": "all the users verification histories",
+              "type": "array",
+              "items": {
+                "description": "data related to confirming the user's device on login",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "verificationCode": {
+                    "type": "string"
+                  },
+                  "verificationId": {
+                    "type": "string"
+                  },
+                  "verifiedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "lastLoggedInAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            },
+            "lastLoggedInAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "userProfile": {
+              "description": "all properties related to the user's public profile",
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "age": {
+                  "type": "integer",
+                  "format": "int64",
+                  "minimum": 18,
+                  "maximum": 100,
+                  "default": 18
+                },
+                "almaMater": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "bio": {
+                  "type": "string",
+                  "pattern": "(\\u00a9|\\u00ae|[\\u2000-\\u3300]|\\ud83c[\\ud000-\\udfff]|\\ud83d[\\ud000-\\udfff]|\\ud83e[\\ud000-\\udfff]|\\w|\\s|\\d|[\\\\?\\\\!\\\\.\\\\$\\\\,\\\\%\\\\&\\\\\"])",
+                  "minLength": 1,
+                  "maxLength": 300
+                },
+                "company": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9]+$",
+                  "minLength": 1,
+                  "maxLength": 75
+                },
+                "education": {
+                  "type": "string",
+                  "enum": [
+                    "GED",
+                    "UNDERGRADUATE",
+                    "ASSOCIATES",
+                    "MASTERS",
+                    "PHD",
+                    "NOT_DISCLOSED"
+                  ],
+                  "default": "NOT_DISCLOSED"
+                },
+                "ethnicity": {
+                  "type": "array",
+                  "items": {
+                    "description": "* AMERICAN_INDIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * EAST_ASIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * BLACK - A person having origins in any of the black racial groups of Africa * HISPANIC - A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin * MIDDLE_EASTERN - For example Egypt * PACIFIC_ISLANDER - A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands. * SOUTH_ASIAN - For example India * WHITE - A person having origins in any of the original peoples of Europe, the Middle East, or North Africa * NOT_DISCLOSED\n",
+                    "type": "string",
+                    "enum": [
+                      "AMERICAN_INDIAN",
+                      "EAST_ASIAN",
+                      "BLACK",
+                      "HISPANIC",
+                      "MIDDLE_EASTERN",
+                      "PACIFIC_ISLANDER",
+                      "SOUTH_ASIAN",
+                      "WHITE",
+                      "NOT_DISCLOSED"
+                    ],
+                    "default": "NOT_DISCLOSED"
+                  }
+                },
+                "firstName": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z]+$",
+                  "minLength": 1,
+                  "maxLength": 75
+                },
+                "gender": {
+                  "type": "string",
+                  "enum": [
+                    "MALE",
+                    "FEMALE",
+                    "NON-BINARY",
+                    "TRANS-MALE",
+                    "TRANS-FEMALE",
+                    "OTHER"
+                  ],
+                  "default": "OTHER"
+                },
+                "height": {
+                  "type": "object",
+                  "properties": {
+                    "length": {
+                      "type": "integer"
+                    },
+                    "unit": {
+                      "type": "string",
+                      "enum": [
+                        "IN",
+                        "CM"
+                      ],
+                      "default": "IN"
+                    }
+                  }
+                },
+                "interestedIn": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "MALE",
+                      "FEMALE",
+                      "NON-BINARY",
+                      "TRANS-MALE",
+                      "TRANS-FEMALE",
+                      "OTHER"
+                    ],
+                    "default": "OTHER"
+                  }
+                },
+                "numDatesCompleted": {
+                  "type": "integer",
+                  "format": "int64",
+                  "default": 0
+                },
+                "numDatesFlaked": {
+                  "type": "integer",
+                  "format": "int64",
+                  "default": 0
+                },
+                "occupation": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z]+$",
+                  "minLength": 1,
+                  "maxLength": 75
+                },
+                "photoImageUrls": {
+                  "type": "array",
+                  "items": {
+                    "description": "represents any form of media associated with a profile",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "mediaId": {
+                        "type": "string"
+                      },
+                      "mediaType": {
+                        "type": "string",
+                        "enum": [
+                          "IMAGE",
+                          "VIDEO",
+                          "AUDIO"
+                        ]
+                      },
+                      "mediaUrl": {
+                        "description": "the location of the media",
+                        "type": "string"
+                      },
+                      "rank": {
+                        "description": "The relative ordering of the profile media",
+                        "type": "integer"
+                      },
+                      "size": {
+                        "description": "size of the file in bytes",
+                        "type": "number"
+                      },
+                      "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                },
+                "politics": {
+                  "type": "string",
+                  "enum": [
+                    "LIBERAL",
+                    "MODERATE",
+                    "CONSERVATIVE",
+                    "APOLITICAL",
+                    "NOT_DISCLOSED"
+                  ],
+                  "default": "NOT_DISCLOSED"
+                },
+                "relationshipInterests": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "FRIENDSHIP",
+                      "DATING_SHORT_TERM",
+                      "DATING_LONG_TERM"
+                    ]
+                  },
+                  "default": [
+                    "FRIENDSHIP",
+                    "DATING_SHORT_TERM",
+                    "DATING_LONG_TERM"
+                  ]
+                },
+                "religion": {
+                  "type": "string",
+                  "enum": [
+                    "CHRISTIAN",
+                    "MUSLIM",
+                    "HINDU",
+                    "BUDDHIST",
+                    "AGNOSTIC",
+                    "ATHEIST",
+                    "JEWISH",
+                    "OTHER",
+                    "NOT_DISCLOSED"
+                  ],
+                  "default": "NOT_DISCLOSED"
+                },
+                "verified": {
+                  "description": "indicates whether or not the user's profile is verified",
+                  "type": "boolean",
+                  "default": false
+                }
+              }
+            },
+            "blockedUsers": {
+              "description": "all the users which this user has blocked",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "blockeDate": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "blockedUserId": {
+                    "type": "string",
+                    "pattern": "^[\\w\\-\\|]+$"
+                  },
+                  "blockerUserId": {
+                    "type": "string",
+                    "pattern": "^[\\w\\-\\|]+$"
+                  },
+                  "uid": {
+                    "type": "string",
+                    "pattern": "^[\\w\\-\\|]+$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "userProfile": {
+          "description": "all properties related to the user's public profile",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "age": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 18,
+              "maximum": 100,
+              "default": 18
+            },
+            "almaMater": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "bio": {
+              "type": "string",
+              "pattern": "(\\u00a9|\\u00ae|[\\u2000-\\u3300]|\\ud83c[\\ud000-\\udfff]|\\ud83d[\\ud000-\\udfff]|\\ud83e[\\ud000-\\udfff]|\\w|\\s|\\d|[\\\\?\\\\!\\\\.\\\\$\\\\,\\\\%\\\\&\\\\\"])",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "company": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9]+$",
+              "minLength": 1,
+              "maxLength": 75
+            },
+            "education": {
+              "type": "string",
+              "enum": [
+                "GED",
+                "UNDERGRADUATE",
+                "ASSOCIATES",
+                "MASTERS",
+                "PHD",
+                "NOT_DISCLOSED"
+              ],
+              "default": "NOT_DISCLOSED"
+            },
+            "ethnicity": {
+              "type": "array",
+              "items": {
+                "description": "* AMERICAN_INDIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * EAST_ASIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * BLACK - A person having origins in any of the black racial groups of Africa * HISPANIC - A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin * MIDDLE_EASTERN - For example Egypt * PACIFIC_ISLANDER - A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands. * SOUTH_ASIAN - For example India * WHITE - A person having origins in any of the original peoples of Europe, the Middle East, or North Africa * NOT_DISCLOSED\n",
+                "type": "string",
+                "enum": [
+                  "AMERICAN_INDIAN",
+                  "EAST_ASIAN",
+                  "BLACK",
+                  "HISPANIC",
+                  "MIDDLE_EASTERN",
+                  "PACIFIC_ISLANDER",
+                  "SOUTH_ASIAN",
+                  "WHITE",
+                  "NOT_DISCLOSED"
+                ],
+                "default": "NOT_DISCLOSED"
+              }
+            },
+            "firstName": {
+              "type": "string",
+              "pattern": "^[A-Za-z]+$",
+              "minLength": 1,
+              "maxLength": 75
+            },
+            "gender": {
+              "type": "string",
+              "enum": [
+                "MALE",
+                "FEMALE",
+                "NON-BINARY",
+                "TRANS-MALE",
+                "TRANS-FEMALE",
+                "OTHER"
+              ],
+              "default": "OTHER"
+            },
+            "height": {
+              "type": "object",
+              "properties": {
+                "length": {
+                  "type": "integer"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "IN",
+                    "CM"
+                  ],
+                  "default": "IN"
+                }
+              }
+            },
+            "interestedIn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "MALE",
+                  "FEMALE",
+                  "NON-BINARY",
+                  "TRANS-MALE",
+                  "TRANS-FEMALE",
+                  "OTHER"
+                ],
+                "default": "OTHER"
+              }
+            },
+            "numDatesCompleted": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            },
+            "numDatesFlaked": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            },
+            "occupation": {
+              "type": "string",
+              "pattern": "^[A-Za-z]+$",
+              "minLength": 1,
+              "maxLength": 75
+            },
+            "photoImageUrls": {
+              "type": "array",
+              "items": {
+                "description": "represents any form of media associated with a profile",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "mediaId": {
+                    "type": "string"
+                  },
+                  "mediaType": {
+                    "type": "string",
+                    "enum": [
+                      "IMAGE",
+                      "VIDEO",
+                      "AUDIO"
+                    ]
+                  },
+                  "mediaUrl": {
+                    "description": "the location of the media",
+                    "type": "string"
+                  },
+                  "rank": {
+                    "description": "The relative ordering of the profile media",
+                    "type": "integer"
+                  },
+                  "size": {
+                    "description": "size of the file in bytes",
+                    "type": "number"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            },
+            "politics": {
+              "type": "string",
+              "enum": [
+                "LIBERAL",
+                "MODERATE",
+                "CONSERVATIVE",
+                "APOLITICAL",
+                "NOT_DISCLOSED"
+              ],
+              "default": "NOT_DISCLOSED"
+            },
+            "relationshipInterests": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "FRIENDSHIP",
+                  "DATING_SHORT_TERM",
+                  "DATING_LONG_TERM"
+                ]
+              },
+              "default": [
+                "FRIENDSHIP",
+                "DATING_SHORT_TERM",
+                "DATING_LONG_TERM"
+              ]
+            },
+            "religion": {
+              "type": "string",
+              "enum": [
+                "CHRISTIAN",
+                "MUSLIM",
+                "HINDU",
+                "BUDDHIST",
+                "AGNOSTIC",
+                "ATHEIST",
+                "JEWISH",
+                "OTHER",
+                "NOT_DISCLOSED"
+              ],
+              "default": "NOT_DISCLOSED"
+            },
+            "verified": {
+              "description": "indicates whether or not the user's profile is verified",
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "userProfileWithUserId": {
+          "description": "all properties related to the user's public profile with user id",
+          "type": "object",
+          "required": [
+            "userId"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "userId": {
+              "type": "string",
+              "pattern": "^[\\w\\-\\|]+$"
+            },
+            "age": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 18,
+              "maximum": 100,
+              "default": 18
+            },
+            "almaMater": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "bio": {
+              "type": "string",
+              "pattern": "(\\u00a9|\\u00ae|[\\u2000-\\u3300]|\\ud83c[\\ud000-\\udfff]|\\ud83d[\\ud000-\\udfff]|\\ud83e[\\ud000-\\udfff]|\\w|\\s|\\d|[\\\\?\\\\!\\\\.\\\\$\\\\,\\\\%\\\\&\\\\\"])",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "company": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9]+$",
+              "minLength": 1,
+              "maxLength": 75
+            },
+            "education": {
+              "type": "string",
+              "enum": [
+                "GED",
+                "UNDERGRADUATE",
+                "ASSOCIATES",
+                "MASTERS",
+                "PHD",
+                "NOT_DISCLOSED"
+              ],
+              "default": "NOT_DISCLOSED"
+            },
+            "ethnicity": {
+              "type": "array",
+              "items": {
+                "description": "* AMERICAN_INDIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * EAST_ASIAN - A person having origins in any of the original peoples of the Far East, Southeast Asia, or the Indian subcontinent * BLACK - A person having origins in any of the black racial groups of Africa * HISPANIC - A person of Cuban, Mexican, Puerto Rican, South or Central American, or other Spanish culture or origin * MIDDLE_EASTERN - For example Egypt * PACIFIC_ISLANDER - A person having origins in any of the original peoples of Hawaii, Guam, Samoa, or other Pacific Islands. * SOUTH_ASIAN - For example India * WHITE - A person having origins in any of the original peoples of Europe, the Middle East, or North Africa * NOT_DISCLOSED\n",
+                "type": "string",
+                "enum": [
+                  "AMERICAN_INDIAN",
+                  "EAST_ASIAN",
+                  "BLACK",
+                  "HISPANIC",
+                  "MIDDLE_EASTERN",
+                  "PACIFIC_ISLANDER",
+                  "SOUTH_ASIAN",
+                  "WHITE",
+                  "NOT_DISCLOSED"
+                ],
+                "default": "NOT_DISCLOSED"
+              }
+            },
+            "firstName": {
+              "type": "string",
+              "pattern": "^[A-Za-z]+$",
+              "minLength": 1,
+              "maxLength": 75
+            },
+            "gender": {
+              "type": "string",
+              "enum": [
+                "MALE",
+                "FEMALE",
+                "NON-BINARY",
+                "TRANS-MALE",
+                "TRANS-FEMALE",
+                "OTHER"
+              ],
+              "default": "OTHER"
+            },
+            "height": {
+              "type": "object",
+              "properties": {
+                "length": {
+                  "type": "integer"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "IN",
+                    "CM"
+                  ],
+                  "default": "IN"
+                }
+              }
+            },
+            "interestedIn": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "MALE",
+                  "FEMALE",
+                  "NON-BINARY",
+                  "TRANS-MALE",
+                  "TRANS-FEMALE",
+                  "OTHER"
+                ],
+                "default": "OTHER"
+              }
+            },
+            "numDatesCompleted": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            },
+            "numDatesFlaked": {
+              "type": "integer",
+              "format": "int64",
+              "default": 0
+            },
+            "occupation": {
+              "type": "string",
+              "pattern": "^[A-Za-z]+$",
+              "minLength": 1,
+              "maxLength": 75
+            },
+            "photoImageUrls": {
+              "type": "array",
+              "items": {
+                "description": "represents any form of media associated with a profile",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "mediaId": {
+                    "type": "string"
+                  },
+                  "mediaType": {
+                    "type": "string",
+                    "enum": [
+                      "IMAGE",
+                      "VIDEO",
+                      "AUDIO"
+                    ]
+                  },
+                  "mediaUrl": {
+                    "description": "the location of the media",
+                    "type": "string"
+                  },
+                  "rank": {
+                    "description": "The relative ordering of the profile media",
+                    "type": "integer"
+                  },
+                  "size": {
+                    "description": "size of the file in bytes",
+                    "type": "number"
+                  },
+                  "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            },
+            "politics": {
+              "type": "string",
+              "enum": [
+                "LIBERAL",
+                "MODERATE",
+                "CONSERVATIVE",
+                "APOLITICAL",
+                "NOT_DISCLOSED"
+              ],
+              "default": "NOT_DISCLOSED"
+            },
+            "relationshipInterests": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "FRIENDSHIP",
+                  "DATING_SHORT_TERM",
+                  "DATING_LONG_TERM"
+                ]
+              },
+              "default": [
+                "FRIENDSHIP",
+                "DATING_SHORT_TERM",
+                "DATING_LONG_TERM"
+              ]
+            },
+            "religion": {
+              "type": "string",
+              "enum": [
+                "CHRISTIAN",
+                "MUSLIM",
+                "HINDU",
+                "BUDDHIST",
+                "AGNOSTIC",
+                "ATHEIST",
+                "JEWISH",
+                "OTHER",
+                "NOT_DISCLOSED"
+              ],
+              "default": "NOT_DISCLOSED"
+            },
+            "verified": {
+              "description": "indicates whether or not the user's profile is verified",
+              "type": "boolean",
+              "default": false
+            }
+          }
+        },
+        "verification": {
+          "description": "data related to confirming the user's device on login",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "verificationCode": {
+              "type": "string"
+            },
+            "verificationId": {
+              "type": "string"
+            },
+            "verifiedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "lastLoggedInAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    }
+  }
