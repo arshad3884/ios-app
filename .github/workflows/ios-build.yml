@@ -1,0 +1,64 @@
+name: iOS Build and IPA Generation
+
+on:
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  build:
+    runs-on: macos-latest  # Use the latest macOS environment
+
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+
+    - name: Install Homebrew
+      run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+    - name: Install Node.js
+      run: brew install node
+
+    - name: Install OpenAPI Generator CLI
+      run: npm install -g @openapitools/openapi-generator-cli
+
+    - name: Install CocoaPods
+      run: brew install cocoapods
+
+    - name: Install dependencies
+      working-directory: ./
+      run: |
+        if [ ! -f "Podfile" ]; then
+          pod init
+        fi
+        pod install --repo-update
+    - name: Check Swift version
+      run: swift --version
+
+    - name: List available schemes
+      run: xcodebuild -workspace Troov.xcworkspace -list
+
+    - name: Run Model Generation
+      run: |
+        npx @openapitools/openapi-generator-cli generate -g swift5 -i backend/api-spec-ref.json -o swift-client-take-two --skip-validate-spec
+    - name: Build and Archive iOS app
+      run: |
+        xcodebuild clean -workspace Troov.xcworkspace \
+        -scheme staging \
+        -sdk iphoneos \
+        -configuration Release \
+        -allowProvisioningUpdates \
+        CODE_SIGNING_REQUIRED=NO \
+        CODE_SIGN_IDENTITY="" \
+        CODE_SIGN_ENTITLEMENTS="" \
+        archive \
+        -archivePath $PWD/build/staging.xcarchive -verbose
+    - name: Export IPA
+      run: |
+        xcodebuild -exportArchive \
+        -archivePath $PWD/build/staging.xcarchive \
+        -exportPath $PWD/build \
+        -exportOptionsPlist ExportOptions.plist
+    - name: Upload IPA as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: mango-app-ipa
+        path: build/*.ipa
