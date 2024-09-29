@@ -57,7 +57,7 @@ extension User {
                     firstName: "RandomFirstName",
                     lastName: "RandomLastName",
                     active: Bool.random(),
-                    dateOfBirth: OpenAPIDateWithoutTime.init(wrappedDate: .now),
+                    dateOfBirth: OpenAPIDateWithoutTime.init(wrappedDate: .now)?.wrappedDate,
                     email: "random@example.com",
                     heardOfTroovFrom: MarketingChannels.allCases.randomElement(),
                     phoneNumber: .init(),
