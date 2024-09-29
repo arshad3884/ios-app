@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+<dict>
+  <key>method</key>
+  <string>development</string>  <!-- or 'ad-hoc', depending on your needs -->
+  <key>signingStyle</key>
+  <string>manual</string>
+  <key>provisioningProfiles</key>
+  <dict/>
+  <key>teamID</key>
+  <string></string>  <!-- Leave empty for unsigned -->
+</dict>
+</plist>
